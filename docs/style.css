@@ -1,0 +1,1895 @@
+@import url("https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css");
+
+/*Global & Variables*/
+:root {
+    --primary-color: #1e3a5f;      /* Deep Navy */
+    --primary-dark-color: #152945; /* Darker Navy for hover states */
+    --accent-color: #f5a623;      /* Vibrant Goldenrod */
+    --accent-dark-color: #d18d1f;  /* Darker Goldenrod for hover */
+    
+    --background-color: #f9fafb;   /* Soft, off-white background */
+    --surface-color: #ffffff;      /* Pure white for cards and modals */
+    
+    --text-color: #333333;
+    --subtle-text-color: #7f8c8d;
+    --border-color: #e0e0e0;
+    
+    --success-color: #2ecc71;
+    --error-color: #e74c3c;
+    --info-color: #3498db;
+    
+    --font-family: 'Poppins', sans-serif;
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --border-radius-large: 12px;
+    --box-shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --box-shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-medium);
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-dark-color);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(245, 166, 35, 0.1);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-subtle);
+}
+
+.btn-logout {
+    background-color: var(--error-color);
+    color: #fff;
+    border-color: var(--error-color);
+}
+
+.btn-logout:hover {
+    background-color: #c0392b;
+}
+
+.btn-full-width {
+    display: block;
+    width: 100%;
+}
+
+/* Cards */
+.card {
+    background: var(--surface-color);
+    padding: 2rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+/* Forms and Inputs */
+.form-container {
+    background-color: var(--surface-color);
+    padding: 2.5rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+.form-container.wide {
+    max-width: 800px;
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--subtle-text-color);
+}
+
+.input-group input,
+.input-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    font-size: 1rem;
+    background-color: #fcfcfc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+}
+
+.form-message {
+    padding: 1rem;
+    border-radius: var(--border-radius-small);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.form-message.success {
+    background-color: #d4edda;
+    color: var(--success-color);
+}
+
+.form-message.error {
+    background-color: #f8d7da;
+    color: var(--error-color);
+}
+
+.form-message.info {
+    background-color: #dbe9f0;
+    color: var(--info-color);
+}
+
+/*--------------------------------------------------
+  3. Layout & Structure
+--------------------------------------------------*/
+
+/* Header */
+.main-header {
+    background: var(--surface-color);
+    box-shadow: var(--box-shadow-subtle);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+    letter-spacing: -1px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* --- CORRECTED RULE --- */
+/* This rule now excludes any link or button that is also a .btn */
+.nav-links a:not(.btn), .nav-links button:not(.btn) {
+    font-weight: 500;
+    color: var(--subtle-text-color);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.nav-links a:hover, .nav-links button:hover {
+    color: var(--primary-color);
+}
+
+.nav-links .btn-primary {
+    color: #fff;
+}
+
+/* Main Content */
+main {
+    flex: 1;
+    padding: 3rem 0;
+}
+
+/* Footer */
+.main-footer {
+    background-color: var(--primary-color);
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+/*--------------------------------------------------
+  4. Page-Specific Styling
+--------------------------------------------------*/
+
+/* Home Page */
+.hero-section {
+    background: linear-gradient(rgba(30, 58, 95, 0.8), rgba(30, 58, 95, 0.8)), url('https://via.placeholder.com/1920x1080?text=Alumni+Network') no-repeat center center/cover;
+    background-attachment: fixed;
+    color: #fff;
+    text-align: center;
+    padding: 8rem 2rem;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-content p {
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.feature-card {
+    border: 1px solid var(--border-color);
+    padding: 2.5rem;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.feature-card i {
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.feature-card:hover i {
+    color: var(--accent-dark-color);
+}
+
+.feature-card h3 {
+    font-weight: 600;
+}
+
+/*--------------------------------------------------
+  5. Responsive Design
+--------------------------------------------------*/
+
+@media (max-width: 768px) {
+    .main-nav {
+        flex-direction: column;
+        text-align: center;
+    }
+    .nav-links {
+        margin-top: 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+}
+
+/* --- login.html & signup.html specific styling --- */
+
+.form-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 100px); /* Adjust based on header/footer height */
+}
+
+.form-container {
+    background-color: var(--surface-color);
+    padding: 2.5rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-elevated);
+    width: 100%;
+    max-width: 450px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.form-container p {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--subtle-text-color);
+}
+
+.form-container a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.form-container a:hover {
+    color: var(--accent-color);
+}
+
+/* --- onboarding.html, dashboard.html, & profile.html specific styling --- */
+
+/* Onboarding Page */
+.form-container.wide {
+    max-width: 900px;
+}
+
+.form-section {
+    background-color: #fcfcfc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.form-row .input-group {
+    flex: 1;
+    min-width: 250px;
+}
+
+/* Dashboard Page */
+.dashboard-main {
+    padding: 3rem 0;
+}
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .dashboard-container {
+        grid-template-columns: 1fr 1fr;
+    }
+    .dashboard-profile-section {
+        grid-column: 1 / 3;
+    }
+}
+
+.dashboard-section {
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+}
+
+.dashboard-profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.dashboard-profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dashboard-list li {
+    background: var(--background-color);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius-small);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    color: var(--text-color);
+}
+
+/* Profile Page */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .profile-container {
+        flex-direction: row;
+    }
+    .profile-sidebar {
+        min-width: 250px;
+        border-right: 1px solid var(--border-color);
+    }
+}
+
+.profile-sidebar {
+    padding: 2.5rem;
+    background-color: #fcfcfc;
+}
+
+.profile-sidebar h3 {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.profile-nav {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.profile-nav a {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius-small);
+    text-decoration: none;
+    color: var(--subtle-text-color);
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.profile-nav a:hover {
+    background-color: #f0f0f0;
+    color: var(--primary-color);
+}
+
+.profile-nav a.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    font-weight: 600;
+}
+
+.profile-content {
+    flex: 1;
+    padding: 2.5rem;
+}
+
+.profile-page {
+    display: none;
+}
+
+.profile-page.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.profile-pic-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 4px solid var(--accent-color);
+}
+
+/* --- directory.html, view-profile.html, events.html, & jobs.html specific styling --- */
+
+/* General list page layout (used for directory, events, jobs) */
+.list-page-main {
+    padding: 3rem 0;
+}
+
+.list-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.search-bar input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    font-size: 1rem;
+    background-color: #fcfcfc;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-bar input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+}
+
+.grid-list {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* Individual Card Styling (used for all lists) */
+.list-card {
+    text-align: center;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.list-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.list-card img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid var(--border-color);
+}
+
+.list-card h4 {
+    font-size: 1.25rem;
+    margin: 0 0 0.25rem;
+}
+
+.list-card p {
+    color: var(--subtle-text-color);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* View Profile Page */
+.profile-view-main {
+    padding: 3rem 0;
+}
+
+.profile-view-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.profile-header-view {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-pic-view {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 4px solid var(--accent-color);
+}
+
+.profile-header-view h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.profile-subheader {
+    color: var(--subtle-text-color);
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.profile-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.profile-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.profile-section h3 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.profile-section h3 i {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+}
+
+.profile-section p {
+    margin: 0.5rem 0;
+}
+
+.contact-links {
+    list-style: none;
+    padding: 0;
+}
+
+.contact-links li {
+    margin-bottom: 0.5rem;
+}
+
+.contact-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact-links a:hover {
+    text-decoration: underline;
+}
+
+/* --- admin.html & campaigns.html specific styling --- */
+
+/* Admin Page */
+.admin-main {
+    padding: 3rem 0;
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.admin-section {
+    padding: 2.5rem;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+.admin-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.admin-list {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-list li {
+    background: var(--background-color);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius-medium);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Campaigns Page */
+.campaigns-main {
+    padding: 3rem 0;
+}
+
+.campaigns-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.campaigns-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.campaign-card {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.campaign-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.campaign-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.campaign-content {
+    padding: 1.5rem;
+}
+
+.campaign-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.campaign-content p {
+    color: var(--subtle-text-color);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius-small);
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: width 0.5s ease;
+}
+
+.campaign-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--subtle-text-color);
+}
+
+.campaign-cta {
+    display: block;
+    margin-top: 1.5rem;
+}
+
+/* --- Advanced Styling Improvements --- */
+
+/* 1. Hero Section Enhancements */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg, 
+        rgba(30, 58, 95, 0.6) 0%, 
+        rgba(30, 58, 95, 0.8) 50%, 
+        rgba(30, 58, 95, 0.6) 100%
+    );
+    animation: gradientShift 20s ease-in-out infinite;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 2. Enhanced Button and Card Effects */
+.btn-primary:active,
+.btn-secondary:active {
+    transform: translateY(0);
+    box-shadow: none;
+    transition: transform 0.1s ease;
+}
+
+.list-card,
+.feature-card,
+.campaign-card {
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Add a glowing effect on hover */
+.list-card:hover,
+.feature-card:hover,
+.campaign-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 15px rgba(245, 166, 35, 0.2);
+}
+
+/* 3. Typography and Link Refinements */
+h2 {
+    letter-spacing: -0.5px;
+    font-weight: 700;
+}
+
+a {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent-color);
+}
+
+/* 4. Footer Enhancement */
+.main-footer {
+    border-top: 3px solid var(--accent-color);
+}
+
+/* --- Final Design Refinements --- */
+
+/* 1. Custom Scrollbar (for Webkit browsers like Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--subtle-text-color);
+    border-radius: 4px;
+    border: 2px solid var(--background-color);
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* 2. Enhanced Focus States for Accessibility */
+:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-color), 0 0 0 5px rgba(245, 166, 35, 0.25);
+    transition: box-shadow 0.2s ease;
+}
+
+/* 3. Link Underline Animation */
+a.link-styled {
+    position: relative;
+    padding-bottom: 2px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+a.link-styled::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-color);
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+
+a.link-styled:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* 4. Text Selection Color */
+::selection {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+/* --- Final Polish & Refinements --- */
+
+/* 1. Subtle Background Pattern for Main Content */
+main {
+    background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+
+/* 2. Glassmorphism Effect for Cards and Forms */
+.card,
+.form-container {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.card:hover,
+.form-container:hover {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+/* 3. Refined Box Shadows */
+.card {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+}
+
+/* 4. Global Transitions for Smoothness */
+body, body * {
+    transition-property: background-color, color, border-color, box-shadow, transform, opacity, backdrop-filter;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in-out;
+}
+
+/* Override for specific animations that need longer duration */
+.hero-section::before {
+    transition-duration: 20s;
+}
+
+/* 5. Custom Link Styling */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease-in-out;
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+/* --- Dark Mode Theme --- */
+
+/* 1. New Variables for Dark Mode */
+.dark-mode {
+    --primary-color: #f5a623;
+    --primary-dark-color: #d18d1f;
+    --accent-color: #007bff;
+    --accent-dark-color: #0056b3;
+    
+    --background-color: #1a1a1a;
+    --surface-color: #2c2c2c;
+    
+    --text-color: #f0f0f0;
+    --subtle-text-color: #a0a0a0;
+    --border-color: #3d3d3d;
+    
+    --box-shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.4);
+    --box-shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* 2. Overriding General Styles for Dark Mode */
+.dark-mode .main-header {
+    background: var(--surface-color);
+    box-shadow: var(--box-shadow-subtle);
+}
+
+.dark-mode .main-footer {
+    background-color: var(--surface-color);
+    border-top: 3px solid var(--accent-color);
+}
+
+.dark-mode .btn-secondary {
+    background-color: transparent;
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.dark-mode .btn-secondary:hover {
+    background-color: rgba(245, 166, 35, 0.1);
+}
+
+.dark-mode .form-container,
+.dark-mode .card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-subtle);
+}
+
+.dark-mode .input-group input,
+.dark-mode .input-group textarea {
+    background-color: var(--background-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.dark-mode .input-group input:focus,
+.dark-mode .input-group textarea:focus {
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+}
+
+.dark-mode .hero-section::before {
+    background: linear-gradient(45deg, rgba(26, 26, 26, 0.8) 0%, rgba(26, 26, 26, 0.9) 50%, rgba(26, 26, 26, 0.8) 100%);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border: 2px solid var(--surface-color);
+}
+
+/* --- Final Professional Polish --- */
+
+/* 1. Fluid Typography with clamp() */
+h1 {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+h2 {
+    font-size: clamp(2rem, 4.5vw, 2.5rem);
+}
+
+h3 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+}
+
+/* 2. Gradient Borders for Key Elements */
+.card,
+.form-container {
+    position: relative;
+    border: none;
+    background: linear-gradient(to bottom, var(--surface-color), var(--surface-color)) padding-box,
+                linear-gradient(45deg, var(--accent-color), var(--primary-color)) border-box;
+    border-radius: var(--border-radius-large);
+    border: 2px solid transparent;
+}
+
+/* 3. Enhanced 3D Card Hover Effect */
+.card:hover {
+    transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* 4. Refined Link and Button Hover Effects */
+a.btn-secondary:hover {
+    background: linear-gradient(to right, var(--accent-color), var(--accent-dark-color));
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.btn-secondary:hover {
+    border-color: transparent;
+}
+
+/* --- Final Professional Polish --- */
+
+/* 1. Loading Spinner */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.loading-spinner::after {
+    content: "";
+    width: 40px;
+    height: 40px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 2. Interactive Card Overlay */
+.list-card,
+.campaign-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(30, 58, 95, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.list-card:hover .card-overlay,
+.campaign-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.card-overlay h4,
+.card-overlay p {
+    color: #fff;
+    text-align: center;
+    transform: translateY(20px);
+    transition: transform 0.3s ease-in-out;
+}
+
+.list-card:hover .card-overlay h4,
+.list-card:hover .card-overlay p,
+.campaign-card:hover .card-overlay h4,
+.campaign-card:hover .card-overlay p {
+    transform: translateY(0);
+}
+
+.card-overlay .btn {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.list-card:hover .card-overlay .btn,
+.campaign-card:hover .card-overlay .btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 3. Smooth Page Transition */
+body main {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Admin Dashboard Enhancements */
+.admin-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+}
+
+.role-badge {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--border-radius-small);
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+    color: white;
+    border-color: var(--error-color);
+}
+
+.btn-danger:hover {
+    background-color: #c0392b; /* Darker red */
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+}
+
+/* Directory Page Enhancements */
+.directory-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.alumnus-list-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.alumnus-list-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.alumnus-pfp-round {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-color);
+}
+
+.alumnus-details {
+    flex: 1;
+}
+
+.alumnus-details h3 {
+    margin: 0 0 0.5rem;
+    color: var(--primary-color);
+}
+
+.alumnus-details p {
+    margin: 0.25rem 0;
+    color: var(--subtle-text-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alumnus-details .btn {
+    margin-top: 1rem;
+}
+
+/* Profile Page Enhancements */
+.profile-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+.profile-field label {
+    font-weight: 600;
+    color: var(--subtle-text-color);
+    flex-basis: 200px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.profile-field .display-field,
+.profile-field .edit-field {
+    flex: 1;
+}
+
+/* Updated: Larger edit fields */
+.profile-field .edit-field {
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.profile-field .edit-icon {
+    margin-left: 1rem;
+    cursor: pointer;
+    color: var(--accent-color);
+    transition: color 0.2s ease;
+}
+
+.profile-field .edit-icon:hover {
+    color: var(--accent-dark-color);
+}
+
+/* New: Aligned privacy checkboxes */
+#privacy-settings .input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Job Board Page Enhancements */
+.jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.job-card {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.job-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.job-card .job-company,
+.job-card .job-location {
+    color: var(--subtle-text-color);
+    margin: 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.job-card .job-description {
+    flex-grow: 1;
+    margin: 1rem 0;
+}
+
+.job-card .apply-btn {
+    margin-top: auto;
+    width: 100%;
+}
+
+/* --- CLICK & HOVER DROPDOWN STYLES --- */
+
+.nav-dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 15px); /* Position it below the trigger */
+    background-color: var(--surface-color);
+    min-width: 220px;
+    box-shadow: var(--box-shadow-elevated);
+    z-index: 1001;
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+    border-radius: var(--border-radius-large);
+    border: 1px solid var(--border-color);
+    
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+/* Show on Hover OR when active class is present */
+.nav-dropdown:hover > .dropdown-menu,
+.nav-dropdown.dropdown-active > .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.nav-dropdown .fa-chevron-down {
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+}
+
+/* Rotate icon when active */
+.nav-dropdown.dropdown-active .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown .dropdown-menu {
+    left: 0;
+    min-width: 180px;
+}
+
+.dropdown-menu li {
+    padding: 0;
+}
+
+.dropdown-menu a,
+.dropdown-menu .logout-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu .logout-button:hover {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+}
+
+.dropdown-menu .logout-button {
+    color: var(--error-color);
+}
+
+.dropdown-menu .logout-button:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.dropdown-divider {
+    border: 0;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0.5rem 0;
+}
+
+/* Static Page (About Us, Single Blog Post) */
+.static-page-main {
+    padding: 3rem 0;
+}
+.about-section h1, .blog-post-full h1 {
+    margin-bottom: 1rem;
+}
+.lead {
+    font-size: 1.25rem;
+    color: var(--subtle-text-color);
+    margin-bottom: 2rem;
+}
+.about-content ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.5rem;
+}
+.about-content li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+.about-content i {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+}
+
+/* Blog List Page */
+.blog-list-container {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    margin-top: 2rem;
+}
+.blog-post-summary {
+    padding: 2rem;
+}
+.post-meta {
+    color: var(--subtle-text-color);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+/* Single Blog Post */
+.post-content {
+    line-height: 1.8;
+    margin-top: 2rem;
+}
+.post-content p {
+    margin-bottom: 1rem;
+}
+
+/* Events Page Enhancements */
+.events-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.event-card {
+    /* The .card class provides the main styling */
+    /* This class is for any specific overrides if needed */
+    text-align: left;
+}
+
+.event-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.event-card p {
+    color: var(--subtle-text-color);
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* --- Privacy Settings Perfect Alignment (Final) --- */
+
+.privacy-option {
+    display: flex;
+    align-items: center; 
+    gap: 0.75rem;
+    margin-bottom: 1.0rem;
+}
+
+.privacy-label-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.privacy-option input[type="checkbox"] {
+    /* We use the default checkbox for a normal look */
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0; 
+}
+
+.privacy-option label {
+    font-weight: 500;
+    color: var(--text-color);
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.privacy-option small {
+    color: var(--subtle-text-color);
+    margin-top: 0.25rem;
+}
+
+/* --- Event Details Page --- */
+.event-details-card h1 {
+    margin-top: 0;
+}
+.event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    color: var(--subtle-text-color);
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.event-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.event-full-description {
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+.attendees-section {
+    margin-top: 2rem;
+}
+.attendees-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.attendee-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: var(--background-color);
+    padding: 0.5rem;
+    border-radius: var(--border-radius-medium);
+}
+.attendee-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* --- Event Card on Main Events Page --- */
+.event-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+}
+.view-details-link {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-top: 1rem;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+.event-card-link:hover .view-details-link {
+    transform: translateX(5px);
+}
+
+/* --- New Admin Dashboard Styles --- */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-elevated);
+}
+
+.stat-card-icon {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    background-color: rgba(245, 166, 35, 0.1);
+    height: 60px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.stat-card-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--subtle-text-color);
+    font-weight: 500;
+}
+
+.stat-card-info p {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-message {
+    text-align: center;
+    padding: 1rem;
+    color: var(--subtle-text-color);
+}
+
+/* --- Interactive Attendee Item --- */
+.attendee-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: var(--background-color);
+    padding: 0.5rem;
+    border-radius: var(--border-radius-medium);
+    text-decoration: none; /* Remove underline from link */
+    color: inherit; /* Inherit text color */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.attendee-item:hover {
+    background-color: #eef2f5;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+
+/* --- New Management Page Styles --- */
+.management-main {
+    padding: 3rem 0;
+}
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+.management-header h2 {
+    margin: 0;
+}
+.management-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+.management-table th, .management-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.management-table th {
+    background-color: var(--background-color);
+    font-weight: 600;
+}
+.management-table tbody tr:hover {
+    background-color: #fcfcfc;
+}
+.management-table .info-message {
+    text-align: center;
+}
+
+/* --- Refactored Admin Dashboard --- */
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+.management-card {
+    display: flex;
+    flex-direction: column;
+}
+.management-card h3 {
+    margin-top: 0;
+}
+.management-card p {
+    flex-grow: 1;
+    color: var(--subtle-text-color);
+    margin-bottom: 1.5rem;
+}
+.management-card .btn {
+    margin-top: auto;
+}
