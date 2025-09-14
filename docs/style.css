@@ -1480,14 +1480,12 @@ body main {
 }
 
 /* --- CLICK & HOVER DROPDOWN STYLES --- */
-
 .nav-dropdown {
     position: relative;
 }
-
 .dropdown-menu {
     position: absolute;
-    right: 0;
+    right: 0; /* Align to the right of the parent */
     top: calc(100% + 15px); /* Position it below the trigger */
     background-color: var(--surface-color);
     min-width: 220px;
@@ -1498,13 +1496,16 @@ body main {
     margin: 0;
     border-radius: var(--border-radius-large);
     border: 1px solid var(--border-color);
-    
     visibility: hidden;
     opacity: 0;
     transform: translateY(10px);
     transition: all 0.3s ease;
 }
-
+/* This rule is now more general to handle both cases */
+.nav-dropdown:not(.profile-dropdown) .dropdown-menu {
+    left: 0;
+    right: auto;
+}
 /* Show on Hover OR when active class is present */
 .nav-dropdown:hover > .dropdown-menu,
 .nav-dropdown.dropdown-active > .dropdown-menu {
@@ -1512,26 +1513,17 @@ body main {
     opacity: 1;
     transform: translateY(0);
 }
-
 .nav-dropdown .fa-chevron-down {
     font-size: 0.7rem;
     transition: transform 0.3s ease;
 }
-
 /* Rotate icon when active */
 .nav-dropdown.dropdown-active .fa-chevron-down {
     transform: rotate(180deg);
 }
-
-.nav-dropdown .dropdown-menu {
-    left: 0;
-    min-width: 180px;
-}
-
 .dropdown-menu li {
     padding: 0;
 }
-
 .dropdown-menu a,
 .dropdown-menu .logout-button {
     display: flex;
@@ -1548,21 +1540,17 @@ body main {
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
-
 .dropdown-menu a:hover,
 .dropdown-menu .logout-button:hover {
     background-color: var(--background-color);
     color: var(--primary-color);
 }
-
 .dropdown-menu .logout-button {
     color: var(--error-color);
 }
-
 .dropdown-menu .logout-button:hover {
     background-color: rgba(231, 76, 60, 0.1);
 }
-
 .dropdown-divider {
     border: 0;
     height: 1px;
@@ -1943,4 +1931,28 @@ body main {
     color: var(--subtle-text-color);
     max-width: 400px;
     margin: 0 auto 1.5rem;
+}
+
+/* --- Profile Picture in Navbar --- */
+.profile-toggle {
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+}
+
+.nav-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-color);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-profile-pic:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
 }

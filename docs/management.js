@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         events: { url: 'events', type: 'event' },
         jobs: { url: 'jobs', type: 'job' },
         campaigns: { url: 'campaigns', type: 'campaign' },
+        blogs: { url: 'blogs', type: 'blog' },
         applications: { url: 'admin/applications', type: 'application' }
     };
 
@@ -51,6 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>
                     <a href="edit-campaign.html?id=${item.campaign_id}" class="btn btn-secondary btn-sm">Edit</a>
                     <button class="btn btn-danger btn-sm delete-btn" data-id="${item.campaign_id}" data-type="campaign">Delete</button>
+                </td>
+            </tr>`,
+        blogs: (item) => `
+            <tr>
+                <td>${item.title}</td>
+                <td>${item.author}</td>
+                <td>${new Date(item.created_at).toLocaleDateString()}</td>
+                <td>
+                    <a href="edit-blog.html?id=${item.blog_id}" class="btn btn-secondary btn-sm">Edit</a>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="${item.blog_id}" data-type="blog">Delete</button>
                 </td>
             </tr>`,
         applications: (item) => `

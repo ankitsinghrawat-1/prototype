@@ -242,6 +242,31 @@ app.post('/api/blogs', async (req, res) => {
     }
 });
 
+app.put('/api/blogs/:id', async (req, res) => {
+    const { title, content } = req.body;
+    try {
+        await pool.query(
+            'UPDATE blogs SET title = ?, content = ? WHERE blog_id = ?',
+            [title, content, req.params.id]
+        );
+        res.status(200).json({ message: 'Blog post updated successfully!' });
+    } catch (error) {
+        console.error('Error updating blog post:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+app.delete('/api/blogs/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM blogs WHERE blog_id = ?', [req.params.id]);
+        res.status(200).json({ message: 'Blog post deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting blog post:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+
 // --- CAMPAIGN ENDPOINTS ---
 
 app.post('/api/campaigns', async (req, res) => {

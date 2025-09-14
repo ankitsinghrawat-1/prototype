@@ -6,15 +6,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // The most reliable check is the data saved in the browser's session storage after login.
     const loggedInUserEmail = sessionStorage.getItem('loggedInUserEmail');
     const userRole = sessionStorage.getItem('userRole');
 
     const navItems = document.createElement('ul');
     navItems.className = 'nav-links';
 
-    // NEW LOGIC: We now primarily check if the user's email is stored in the session.
     if (loggedInUserEmail) {
+        let profilePicUrl = 'https://via.placeholder.com/150'; // Default placeholder
+        try {
+            const response = await fetch(`http://localhost:3000/api/profile/${loggedInUserEmail}`);
+            if (response.ok) {
+                const user = await response.json();
+                if (user.profile_pic_url) {
+                    profilePicUrl = `http://localhost:3000/${user.profile_pic_url}`;
+                }
+            }
+        } catch (error) {
+            console.error('Could not fetch profile picture for navbar:', error);
+        }
+
         // --- LOGGED-IN VIEW ---
         navItems.innerHTML = `
             <li><a href="about.html">About</a></li>
@@ -36,7 +47,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             </li>
             ${userRole === 'admin' ? `<li><a href="admin.html" class="btn btn-secondary">Admin Dashboard</a></li>` : `<li><a href="dashboard.html" class="btn btn-secondary">Dashboard</a></li>`}
             <li class="profile-dropdown nav-dropdown">
-                <a href="#" class="dropdown-toggle btn btn-primary">Profile</a>
+                <a href="#" class="dropdown-toggle profile-toggle">
+                    <img src="${profilePicUrl}" alt="Profile" class="nav-profile-pic">
+                </a>
                 <ul class="dropdown-menu">
                     <li><a href="profile.html#edit-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
                     <li><a href="profile.html#change-password"><i class="fas fa-key"></i> Change Password</a></li>
@@ -59,12 +72,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     navLinks.innerHTML = '';
     navLinks.appendChild(navItems);
 
-    // --- All event listeners remain the same ---
     document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
         toggle.addEventListener('click', e => {
             e.preventDefault();
             e.stopPropagation();
-            const parentDropdown = e.currentTarget.parentElement;
+            const parentDropdown = e.currentTarget.closest('.nav-dropdown');
             
             document.querySelectorAll('.nav-dropdown').forEach(dd => {
                 if (dd !== parentDropdown) {
@@ -87,13 +99,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         logoutBtn.addEventListener('click', async () => {
             sessionStorage.removeItem('loggedInUserEmail');
             sessionStorage.removeItem('userRole');
-            // We still contact the server to clear the httpOnly cookie
             await fetch('http://localhost:3000/api/logout', { method: 'POST', credentials: 'include' });
             window.location.href = 'index.html';
         });
     }
 
-    // This part now uses the reliable sessionStorage check
     const path = window.location.pathname;
     const isIndexPage = path === '/' || path.endsWith('/index.html') || path.endsWith('/');
     if (isIndexPage) {
