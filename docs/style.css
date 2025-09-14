@@ -1893,3 +1893,54 @@ body main {
 .management-card .btn {
     margin-top: auto;
 }
+
+/* --- Loading Spinner --- */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: var(--primary-color);
+    animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* --- Enhanced Empty State --- */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-subtle);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--subtle-text-color);
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+}

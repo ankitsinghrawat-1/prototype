@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
@@ -7,6 +8,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
 const cookieParser = require('cookie-parser');
+// --- SECURITY IMPROVEMENT: Load environment variables ---
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,16 +32,17 @@ app.use(cookieParser());
 app.use(express.static('docs'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Create a connection pool
+// --- SECURITY IMPROVEMENT: Use environment variables for database credentials ---
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'ankit@54328',
-    database: 'alumni_db',
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'ankit@54328',
+    database: process.env.DB_NAME || 'alumni_db',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
+
 
 // Create 'uploads' directory if they don't exist
 const uploadDir = path.join(__dirname, 'uploads');
