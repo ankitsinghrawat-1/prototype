@@ -971,6 +971,29 @@ app.put('/api/events/:id', async (req, res) => {
     }
 });
 
+app.delete('/api/events/:id', async (req, res) => {
+    try {
+        const eventId = req.params.id;
+        
+        // First, check if the event exists before attempting to delete
+        const [eventCheck] = await pool.query('SELECT event_id FROM events WHERE event_id = ?', [eventId]);
+        if (eventCheck.length === 0) {
+            return res.status(404).json({ message: 'Event not found.' });
+        }
+
+        // Then, delete all RSVPs associated with the event
+        await pool.query('DELETE FROM event_rsvps WHERE event_id = ?', [eventId]);
+
+        // Finally, delete the event itself
+        await pool.query('DELETE FROM events WHERE event_id = ?', [eventId]);
+
+        res.status(200).json({ message: 'Event and all related RSVPs deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
 app.get('/api/jobs', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM jobs ORDER BY created_at DESC');
