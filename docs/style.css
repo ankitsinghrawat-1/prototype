@@ -234,8 +234,6 @@ h1, h2, h3, h4, h5, h6 {
     gap: 2rem;
 }
 
-/* --- CORRECTED RULE --- */
-/* This rule now excludes any link or button that is also a .btn */
 .nav-links a:not(.btn), .nav-links button:not(.btn) {
     font-weight: 500;
     color: var(--subtle-text-color);
@@ -368,7 +366,7 @@ main {
     justify-content: center;
     align-items: center;
     padding: 2rem 1.5rem;
-    min-height: calc(100vh - 100px); /* Adjust based on header/footer height */
+    min-height: calc(100vh - 100px);
 }
 
 .form-container {
@@ -407,7 +405,6 @@ main {
 
 /* --- onboarding.html, dashboard.html, & profile.html specific styling --- */
 
-/* Onboarding Page */
 .form-container.wide {
     max-width: 900px;
 }
@@ -437,7 +434,6 @@ main {
     min-width: 250px;
 }
 
-/* Dashboard Page */
 .dashboard-main {
     padding: 3rem 0;
 }
@@ -500,7 +496,6 @@ main {
     color: var(--text-color);
 }
 
-/* Profile Page */
 .profile-container {
     display: flex;
     flex-direction: column;
@@ -590,9 +585,8 @@ main {
     border: 4px solid var(--accent-color);
 }
 
-/* --- directory.html, view-profile.html, events.html, & jobs.html specific styling --- */
+/* --- Directory, View Profile, Events, Jobs specific styling --- */
 
-/* General list page layout (used for directory, events, jobs) */
 .list-page-main {
     padding: 3rem 0;
 }
@@ -633,7 +627,6 @@ main {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-/* Individual Card Styling (used for all lists) */
 .list-card {
     text-align: center;
     padding: 2rem;
@@ -668,7 +661,6 @@ main {
     margin: 0;
 }
 
-/* View Profile Page */
 .profile-view-main {
     padding: 3rem 0;
 }
@@ -758,9 +750,8 @@ main {
     text-decoration: underline;
 }
 
-/* --- admin.html & campaigns.html specific styling --- */
+/* --- Admin & Campaigns specific styling --- */
 
-/* Admin Page */
 .admin-main {
     padding: 3rem 0;
 }
@@ -807,7 +798,6 @@ main {
     align-items: center;
 }
 
-/* Campaigns Page */
 .campaigns-main {
     padding: 3rem 0;
 }
@@ -886,9 +876,8 @@ main {
     margin-top: 1.5rem;
 }
 
-/* --- Advanced Styling Improvements --- */
+/* --- Advanced Styling & Final Polish --- */
 
-/* 1. Hero Section Enhancements */
 .hero-section {
     position: relative;
     overflow: hidden;
@@ -922,7 +911,6 @@ main {
     100% { background-position: 0% 50%; }
 }
 
-/* 2. Enhanced Button and Card Effects */
 .btn-primary:active,
 .btn-secondary:active {
     transform: translateY(0);
@@ -936,7 +924,6 @@ main {
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Add a glowing effect on hover */
 .list-card:hover,
 .feature-card:hover,
 .campaign-card:hover {
@@ -944,7 +931,6 @@ main {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 15px rgba(245, 166, 35, 0.2);
 }
 
-/* 3. Typography and Link Refinements */
 h2 {
     letter-spacing: -0.5px;
     font-weight: 700;
@@ -958,14 +944,10 @@ a:hover {
     color: var(--accent-color);
 }
 
-/* 4. Footer Enhancement */
 .main-footer {
     border-top: 3px solid var(--accent-color);
 }
 
-/* --- Final Design Refinements --- */
-
-/* 1. Custom Scrollbar (for Webkit browsers like Chrome, Safari) */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -985,14 +967,12 @@ a:hover {
     background: var(--primary-color);
 }
 
-/* 2. Enhanced Focus States for Accessibility */
 :focus {
     outline: none;
     box-shadow: 0 0 0 3px var(--accent-color), 0 0 0 5px rgba(245, 166, 35, 0.25);
     transition: box-shadow 0.2s ease;
 }
 
-/* 3. Link Underline Animation */
 a.link-styled {
     position: relative;
     padding-bottom: 2px;
@@ -1018,22 +998,17 @@ a.link-styled:hover::after {
     transform-origin: bottom left;
 }
 
-/* 4. Text Selection Color */
 ::selection {
     background-color: var(--accent-color);
     color: #fff;
 }
 
-/* --- Final Polish & Refinements --- */
-
-/* 1. Subtle Background Pattern for Main Content */
 main {
     background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
     background-size: 20px 20px;
     background-position: 0 0, 10px 10px;
 }
 
-/* 2. Glassmorphism Effect for Cards and Forms */
 .card,
 .form-container {
     background: rgba(255, 255, 255, 0.7);
@@ -1047,7 +1022,6 @@ main {
     background: rgba(255, 255, 255, 0.85);
 }
 
-/* 3. Refined Box Shadows */
 .card {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
@@ -1057,19 +1031,16 @@ main {
     transform: translateY(-8px);
 }
 
-/* 4. Global Transitions for Smoothness */
 body, body * {
     transition-property: background-color, color, border-color, box-shadow, transform, opacity, backdrop-filter;
     transition-duration: 0.3s;
     transition-timing-function: ease-in-out;
 }
 
-/* Override for specific animations that need longer duration */
 .hero-section::before {
     transition-duration: 20s;
 }
 
-/* 5. Custom Link Styling */
 a {
     color: var(--primary-color);
     text-decoration: none;
@@ -1093,122 +1064,6 @@ a:hover::after {
     width: 100%;
 }
 
-/* --- Dark Mode Theme --- */
-
-/* 1. New Variables for Dark Mode */
-.dark-mode {
-    --primary-color: #f5a623;
-    --primary-dark-color: #d18d1f;
-    --accent-color: #007bff;
-    --accent-dark-color: #0056b3;
-    
-    --background-color: #1a1a1a;
-    --surface-color: #2c2c2c;
-    
-    --text-color: #f0f0f0;
-    --subtle-text-color: #a0a0a0;
-    --border-color: #3d3d3d;
-    
-    --box-shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.4);
-    --box-shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-
-/* 2. Overriding General Styles for Dark Mode */
-.dark-mode .main-header {
-    background: var(--surface-color);
-    box-shadow: var(--box-shadow-subtle);
-}
-
-.dark-mode .main-footer {
-    background-color: var(--surface-color);
-    border-top: 3px solid var(--accent-color);
-}
-
-.dark-mode .btn-secondary {
-    background-color: transparent;
-    color: var(--accent-color);
-    border-color: var(--accent-color);
-}
-
-.dark-mode .btn-secondary:hover {
-    background-color: rgba(245, 166, 35, 0.1);
-}
-
-.dark-mode .form-container,
-.dark-mode .card {
-    background: var(--surface-color);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--box-shadow-subtle);
-}
-
-.dark-mode .input-group input,
-.dark-mode .input-group textarea {
-    background-color: var(--background-color);
-    border-color: var(--border-color);
-    color: var(--text-color);
-}
-
-.dark-mode .input-group input:focus,
-.dark-mode .input-group textarea:focus {
-    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
-}
-
-.dark-mode .hero-section::before {
-    background: linear-gradient(45deg, rgba(26, 26, 26, 0.8) 0%, rgba(26, 26, 26, 0.9) 50%, rgba(26, 26, 26, 0.8) 100%);
-}
-
-.dark-mode ::-webkit-scrollbar-thumb {
-    background: var(--accent-color);
-    border: 2px solid var(--surface-color);
-}
-
-/* --- Final Professional Polish --- */
-
-/* 1. Fluid Typography with clamp() */
-h1 {
-    font-size: clamp(2.5rem, 6vw, 3.5rem);
-}
-
-h2 {
-    font-size: clamp(2rem, 4.5vw, 2.5rem);
-}
-
-h3 {
-    font-size: clamp(1.5rem, 3.5vw, 2rem);
-}
-
-/* 2. Gradient Borders for Key Elements */
-.card,
-.form-container {
-    position: relative;
-    border: none;
-    background: linear-gradient(to bottom, var(--surface-color), var(--surface-color)) padding-box,
-                linear-gradient(45deg, var(--accent-color), var(--primary-color)) border-box;
-    border-radius: var(--border-radius-large);
-    border: 2px solid transparent;
-}
-
-/* 3. Enhanced 3D Card Hover Effect */
-.card:hover {
-    transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-}
-
-/* 4. Refined Link and Button Hover Effects */
-a.btn-secondary:hover {
-    background: linear-gradient(to right, var(--accent-color), var(--accent-dark-color));
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: var(--box-shadow-elevated);
-}
-
-.btn-secondary:hover {
-    border-color: transparent;
-}
-
-/* --- Final Professional Polish --- */
-
-/* 1. Loading Spinner */
 .loading-spinner {
     display: flex;
     justify-content: center;
@@ -1232,7 +1087,6 @@ a.btn-secondary:hover {
     }
 }
 
-/* 2. Interactive Card Overlay */
 .list-card,
 .campaign-card {
     position: relative;
@@ -1288,12 +1142,10 @@ a.btn-secondary:hover {
     transform: translateY(0);
 }
 
-/* 3. Smooth Page Transition */
 body main {
     animation: fadeIn 0.8s ease-in-out;
 }
 
-/* Admin Dashboard Enhancements */
 .admin-list-container {
     display: flex;
     flex-direction: column;
@@ -1326,7 +1178,7 @@ body main {
 }
 
 .btn-danger:hover {
-    background-color: #c0392b; /* Darker red */
+    background-color: #c0392b;
 }
 
 .btn-sm {
@@ -1334,7 +1186,6 @@ body main {
     font-size: 0.9rem;
 }
 
-/* Directory Page Enhancements */
 .directory-list {
     display: flex;
     flex-direction: column;
@@ -1386,7 +1237,6 @@ body main {
     margin-top: 1rem;
 }
 
-/* Profile Page Enhancements */
 .profile-field {
     display: flex;
     align-items: center;
@@ -1409,7 +1259,6 @@ body main {
     flex: 1;
 }
 
-/* Updated: Larger edit fields */
 .profile-field .edit-field {
     padding: 0.5rem;
     font-size: 1rem;
@@ -1426,14 +1275,12 @@ body main {
     color: var(--accent-dark-color);
 }
 
-/* New: Aligned privacy checkboxes */
 #privacy-settings .input-group {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-/* Job Board Page Enhancements */
 .jobs-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1479,14 +1326,14 @@ body main {
     width: 100%;
 }
 
-/* --- CLICK & HOVER DROPDOWN STYLES --- */
 .nav-dropdown {
     position: relative;
 }
+
 .dropdown-menu {
     position: absolute;
-    right: 0; /* Align to the right of the parent */
-    top: calc(100% + 15px); /* Position it below the trigger */
+    right: 0;
+    top: calc(100% + 15px);
     background-color: var(--surface-color);
     min-width: 220px;
     box-shadow: var(--box-shadow-elevated);
@@ -1501,29 +1348,32 @@ body main {
     transform: translateY(10px);
     transition: all 0.3s ease;
 }
-/* This rule is now more general to handle both cases */
+
 .nav-dropdown:not(.profile-dropdown) .dropdown-menu {
     left: 0;
     right: auto;
 }
-/* Show on Hover OR when active class is present */
+
 .nav-dropdown:hover > .dropdown-menu,
 .nav-dropdown.dropdown-active > .dropdown-menu {
     visibility: visible;
     opacity: 1;
     transform: translateY(0);
 }
+
 .nav-dropdown .fa-chevron-down {
     font-size: 0.7rem;
     transition: transform 0.3s ease;
 }
-/* Rotate icon when active */
+
 .nav-dropdown.dropdown-active .fa-chevron-down {
     transform: rotate(180deg);
 }
+
 .dropdown-menu li {
     padding: 0;
 }
+
 .dropdown-menu a,
 .dropdown-menu .logout-button {
     display: flex;
@@ -1540,17 +1390,21 @@ body main {
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
+
 .dropdown-menu a:hover,
 .dropdown-menu .logout-button:hover {
     background-color: var(--background-color);
     color: var(--primary-color);
 }
+
 .dropdown-menu .logout-button {
     color: var(--error-color);
 }
+
 .dropdown-menu .logout-button:hover {
     background-color: rgba(231, 76, 60, 0.1);
 }
+
 .dropdown-divider {
     border: 0;
     height: 1px;
@@ -1558,7 +1412,6 @@ body main {
     margin: 0.5rem 0;
 }
 
-/* Static Page (About Us, Single Blog Post) */
 .static-page-main {
     padding: 3rem 0;
 }
@@ -1587,7 +1440,6 @@ body main {
     font-size: 1.5rem;
 }
 
-/* Blog List Page */
 .blog-list-container {
     display: grid;
     gap: 2rem;
@@ -1603,7 +1455,6 @@ body main {
     margin-bottom: 1rem;
 }
 
-/* Single Blog Post */
 .post-content {
     line-height: 1.8;
     margin-top: 2rem;
@@ -1612,7 +1463,6 @@ body main {
     margin-bottom: 1rem;
 }
 
-/* Events Page Enhancements */
 .events-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1620,8 +1470,6 @@ body main {
 }
 
 .event-card {
-    /* The .card class provides the main styling */
-    /* This class is for any specific overrides if needed */
     text-align: left;
 }
 
@@ -1638,8 +1486,6 @@ body main {
     gap: 0.5rem;
 }
 
-/* --- Privacy Settings Perfect Alignment (Final) --- */
-
 .privacy-option {
     display: flex;
     align-items: center; 
@@ -1653,7 +1499,6 @@ body main {
 }
 
 .privacy-option input[type="checkbox"] {
-    /* We use the default checkbox for a normal look */
     width: 16px;
     height: 16px;
     margin: 0;
@@ -1672,7 +1517,6 @@ body main {
     margin-top: 0.25rem;
 }
 
-/* --- Event Details Page --- */
 .event-details-card h1 {
     margin-top: 0;
 }
@@ -1718,7 +1562,6 @@ body main {
     object-fit: cover;
 }
 
-/* --- Event Card on Main Events Page --- */
 .event-card-link {
     text-decoration: none;
     color: inherit;
@@ -1736,7 +1579,6 @@ body main {
     transform: translateX(5px);
 }
 
-/* --- New Admin Dashboard Styles --- */
 .admin-header {
     display: flex;
     justify-content: space-between;
@@ -1806,7 +1648,6 @@ body main {
     color: var(--subtle-text-color);
 }
 
-/* --- Interactive Attendee Item --- */
 .attendee-item {
     display: flex;
     align-items: center;
@@ -1814,8 +1655,8 @@ body main {
     background-color: var(--background-color);
     padding: 0.5rem;
     border-radius: var(--border-radius-medium);
-    text-decoration: none; /* Remove underline from link */
-    color: inherit; /* Inherit text color */
+    text-decoration: none;
+    color: inherit;
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -1825,7 +1666,6 @@ body main {
 }
 
 
-/* --- New Management Page Styles --- */
 .management-main {
     padding: 3rem 0;
 }
@@ -1859,7 +1699,6 @@ body main {
     text-align: center;
 }
 
-/* --- Refactored Admin Dashboard --- */
 .management-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1882,7 +1721,6 @@ body main {
     margin-top: auto;
 }
 
-/* --- Loading Spinner --- */
 .loading-spinner {
     display: flex;
     justify-content: center;
@@ -1907,7 +1745,6 @@ body main {
         transform: rotate(360deg);
     }
 }
-/* --- Enhanced Empty State --- */
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -1933,7 +1770,6 @@ body main {
     margin: 0 auto 1.5rem;
 }
 
-/* --- Profile Picture in Navbar --- */
 .profile-toggle {
     padding: 0 !important;
     background: none !important;
@@ -1957,8 +1793,6 @@ body main {
     box-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
 }
 
-
-/* --- Dark Mode Theme --- */
 html.dark-mode {
     --primary-color: #f5a623;
     --primary-dark-color: #d18d1f;
@@ -1981,7 +1815,7 @@ html.dark-mode .main-footer {
 
 html.dark-mode .card,
 html.dark-mode .form-container {
-    background: rgba(44, 44, 44, 0.7); /* Dark Glassmorphism */
+    background: rgba(44, 44, 44, 0.7);
     border-color: transparent;
 }
 
@@ -2028,7 +1862,6 @@ html.dark-mode .management-table tbody tr:hover {
     background-color: #333;
 }
 
-/* --- Theme Toggle Button --- */
 .theme-toggle-button {
     display: flex;
     align-items: center;
@@ -2042,16 +1875,54 @@ html.dark-mode .management-table tbody tr:hover {
     color: var(--text-color);
     font-size: 0.95rem;
     font-weight: 500;
-    font-family: var(--font-family); /* Ensure font consistency */
+    font-family: var(--font-family);
     transition: background-color 0.2s ease, color 0.2s ease;
 }
+
 .theme-toggle-button:hover {
     background-color: var(--background-color);
     color: var(--primary-color);
 }
 
-.main-footer .container {
-    display: flex;
-    justify-content: space-between;
+.verified-badge {
+    background-color: #3498db;
+    color: #fff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-left: 0.75rem;
+    display: inline-flex;
     align-items: center;
+    gap: 0.4rem;
+    vertical-align: middle;
+}
+
+.verified-badge-sm {
+    color: #3498db;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+html.dark-mode .verified-badge {
+    background-color: var(--accent-color);
+}
+
+html.dark-mode .verified-badge-sm {
+    color: var(--accent-color);
+}
+
+.dashboard-name-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.profile-display-field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }

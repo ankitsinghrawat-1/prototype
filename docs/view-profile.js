@@ -13,10 +13,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             if (response.status === 403) {
                 const privateData = await response.json();
+                const badgeHTML = privateData.is_verified ? '<span class="verified-badge" title="Verified"><i class="fas fa-check-circle"></i> Verified</span>' : '';
                 document.querySelector('.profile-container-view').innerHTML = `
                     <div class="profile-header-view">
                         <img class="profile-pic-view" src="${privateData.profile_pic_url ? `http://localhost:3000/${privateData.profile_pic_url}` : 'https://via.placeholder.com/150'}" alt="Profile Picture">
-                        <h2>${privateData.full_name}</h2>
+                        <h2>${privateData.full_name} ${badgeHTML}</h2>
                         <p class="info-message"><i class="fas fa-lock"></i> This profile is private.</p>
                     </div>
                 `;
@@ -29,6 +30,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const user = await response.json();
             
             document.getElementById('profile-name-view').textContent = user.full_name || 'N/A';
+            
+            const badgeContainer = document.getElementById('verified-badge-container');
+            if (user.is_verified) {
+                badgeContainer.innerHTML = '<span class="verified-badge" title="Verified"><i class="fas fa-check-circle"></i> Verified</span>';
+            } else {
+                badgeContainer.innerHTML = '';
+            }
+
             document.getElementById('profile-subheader').textContent = `${user.job_title || 'N/A'} at ${user.current_company || 'N/A'}`;
             document.getElementById('bio-view').textContent = user.bio || 'No bio available.';
             document.getElementById('university-view').textContent = user.university || 'N/A';

@@ -27,13 +27,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            // Only prevent default for tab-switching links
             if (link.hasAttribute('data-tab')) {
                 e.preventDefault();
                 const targetTab = e.target.getAttribute('data-tab');
                 window.location.hash = targetTab;
             }
-            // Let regular links like "My Blogs" navigate normally
         });
     });
 
@@ -50,7 +48,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             targetLink.classList.add('active');
             targetPage.classList.add('active');
         } else {
-            // Fallback to the first tab if the hash is invalid
             const firstTabLink = document.querySelector('.profile-nav a[data-tab]');
             if (firstTabLink) {
                 firstTabLink.classList.add('active');
@@ -61,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     
     window.addEventListener('hashchange', handleTabSwitching);
-    handleTabSwitching(); // Initial call to set the correct tab on page load
+    handleTabSwitching();
 
     uploadBtn.addEventListener('click', () => {
         pfpUpload.click();
@@ -80,6 +77,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const populateProfileData = (data) => {
         document.getElementById('full_name').textContent = data.full_name || 'Not set';
+        
+        const badgeContainer = document.getElementById('profile-verified-badge');
+        if (data.is_verified) {
+            badgeContainer.innerHTML = '<span class="verified-badge-sm" title="Verified"><i class="fas fa-check-circle"></i></span>';
+        } else {
+            badgeContainer.innerHTML = '';
+        }
+
         document.getElementById('email').textContent = data.email || 'Not set';
         document.getElementById('bio').textContent = data.bio || 'Not set';
         document.getElementById('current_company').textContent = data.current_company || 'Not set';
@@ -138,13 +143,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (field.style.display === 'none') {
                 display.style.display = 'none';
                 field.style.display = 'block';
-                field.value = display.textContent === 'Not set' ? '' : display.textContent;
+                field.value = display.firstElementChild.textContent === 'Not set' ? '' : display.firstElementChild.textContent;
                 e.target.classList.remove('fa-edit');
                 e.target.classList.add('fa-save');
             } else {
-                display.style.display = 'block';
+                display.style.display = 'flex';
                 field.style.display = 'none';
-                display.textContent = field.value || 'Not set';
+                display.firstElementChild.textContent = field.value || 'Not set';
                 e.target.classList.remove('fa-save');
                 e.target.classList.add('fa-edit');
             }

@@ -655,10 +655,22 @@ app.get('/api/admin/applications', async (req, res) => {
 
 app.get('/api/admin/users', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT user_id, full_name, email, role FROM users');
+        const [rows] = await pool.query('SELECT user_id, full_name, email, role, is_verified FROM users');
         res.json(rows);
     } catch (error) {
         console.error('Error fetching users for admin:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+app.post('/api/admin/users/:id/verify', async (req, res) => {
+    const { id } = req.params;
+    const { is_verified } = req.body;
+    try {
+        await pool.query('UPDATE users SET is_verified = ? WHERE user_id = ?', [is_verified, id]);
+        res.status(200).json({ message: 'User verification status updated.' });
+    } catch (error) {
+        console.error('Error updating user verification:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });

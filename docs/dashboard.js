@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('profile-name').textContent = user.full_name;
             document.getElementById('profile-info').textContent = `${user.job_title} at ${user.current_company}`;
             
+            const badgeContainer = document.getElementById('dashboard-verified-badge');
+            if (user.is_verified) {
+                badgeContainer.innerHTML = '<span class="verified-badge-sm" title="Verified"><i class="fas fa-check-circle"></i></span>';
+            }
+
             const profilePic = document.getElementById('profile-pic');
             if (user.profile_pic_url) {
                 profilePic.src = `http://localhost:3000/${user.profile_pic_url}`;

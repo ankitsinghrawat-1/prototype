@@ -19,10 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderers = {
         users: (item) => `
             <tr>
-                <td>${item.full_name}</td>
+                <td>${item.full_name} ${item.is_verified ? '<span class="verified-badge-sm" title="Verified"><i class="fas fa-check-circle"></i></span>' : ''}</td>
                 <td>${item.email}</td>
                 <td><span class="role-badge">${item.role}</span></td>
-                <td><button class="btn btn-danger btn-sm delete-btn" data-id="${item.user_id}" data-type="user">Delete</button></td>
+                <td>
+                    <button class="btn ${item.is_verified ? 'btn-secondary' : 'btn-primary'} btn-sm verify-btn" data-id="${item.user_id}" data-verified="${item.is_verified ? '1' : '0'}">
+                        ${item.is_verified ? 'Unverify' : 'Verify'}
+                    </button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="${item.user_id}" data-type="user">Delete</button>
+                </td>
             </tr>`,
         events: (item) => `
             <tr>
@@ -94,17 +99,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     listContainer.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('delete-btn')) {
-            const type = e.target.dataset.type;
-            const id = e.target.dataset.id;
-            const config = Object.values(apiConfig).find(c => c.type === type);
+        const target = e.target.closest('button'); // More robust event delegation
+        if (!target) return;
+
+        const id = target.dataset.id;
+        const type = target.dataset.type;
+
+        if (target.classList.contains('delete-btn')) {
+            const configKey = type + 's'; // e.g., 'users', 'events'
+            const config = apiConfig[configKey];
 
             if (confirm(`Are you sure you want to delete this ${type}?`)) {
                 try {
-                    const deleteUrl = (type === 'user') 
-                        ? `http://localhost:3000/api/admin/${type}s/${id}`
-                        : `http://localhost:3000/api/${config.url}/${id}`;
-                        
+                    let deleteUrl = `http://localhost:3000/api/${config.url}/${id}`;
+                    
+                    // User deletion has a special URL structure
+                    if (type === 'user') {
+                        deleteUrl = `http://localhost:3000/api/admin/users/${id}`;
+                    }
+
                     const response = await fetch(deleteUrl, { method: 'DELETE' });
 
                     if (response.ok) {
@@ -118,6 +131,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error(`Error deleting ${type}:`, error);
                     showToast(`An error occurred while deleting the ${type}.`, 'error');
                 }
+            }
+        }
+
+        if (target.classList.contains('verify-btn')) {
+            const isVerified = target.dataset.verified === '1';
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/admin/users/${id}/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ is_verified: !isVerified })
+                });
+
+                if (response.ok) {
+                    showToast('User verification status updated.', 'success');
+                    loadData();
+                } else {
+                    const result = await response.json();
+                    showToast(`Error: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error updating verification status:', error);
+                showToast('An error occurred.', 'error');
             }
         }
     });
