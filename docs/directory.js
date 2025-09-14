@@ -1,3 +1,4 @@
+// docs/directory.js
 document.addEventListener('DOMContentLoaded', async () => {
     const alumniListContainer = document.getElementById('directory-list');
     const searchInput = document.getElementById('directory-search-input');
@@ -6,18 +7,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     const yearFilter = document.getElementById('year-filter');
     const cityFilter = document.getElementById('city-filter');
     const searchButton = document.getElementById('directory-search-button');
-    const noResultsMessage = document.getElementById('no-results-message');
-    const loadingMessage = document.getElementById('loading-message');
+
+    const showLoading = (isLoading) => {
+        if (isLoading) {
+            alumniListContainer.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+        }
+    };
+
+    const showEmptyState = () => {
+        alumniListContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <h3>No Alumni Found</h3>
+                <p>No alumni matched your search criteria. Try broadening your search.</p>
+            </div>`;
+    };
 
     const fetchAndRenderAlumni = async () => {
-        if (!alumniListContainer || !loadingMessage || !noResultsMessage) {
-            console.error('Core directory elements not found!');
-            return;
-        }
-
-        loadingMessage.style.display = 'block';
-        alumniListContainer.innerHTML = '';
-        noResultsMessage.style.display = 'none';
+        showLoading(true);
 
         const query = searchInput.value;
         const university = universityFilter.value;
@@ -35,12 +42,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             const response = await fetch(`http://localhost:3000/api/alumni?${params.toString()}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const alumni = await response.json();
             
-            loadingMessage.style.display = 'none';
+            alumniListContainer.innerHTML = ''; // Clear loading spinner
 
             if (alumni.length > 0) {
                 alumni.forEach(alumnus => {
@@ -52,43 +57,37 @@ document.addEventListener('DOMContentLoaded', async () => {
                         : 'https://via.placeholder.com/150';
 
                     alumnusItem.innerHTML = `
-                        <img src="${profilePicUrl}" alt="${alumnus.full_name}" class="alumnus-pfp-round">
+                        <img src="${profilePicUrl}" alt="${sanitizeHTML(alumnus.full_name)}" class="alumnus-pfp-round">
                         <div class="alumnus-details">
-                            <h3>${alumnus.full_name}</h3>
-                            <p><i class="fas fa-briefcase"></i> ${alumnus.job_title ? alumnus.job_title + ' at ' : ''}${alumnus.current_company || 'N/A'}</p>
-                            <p><i class="fas fa-graduation-cap"></i> ${alumnus.major || 'N/A'} | Class of ${alumnus.graduation_year || 'N/A'}</p>
+                            <h3>${sanitizeHTML(alumnus.full_name)}</h3>
+                            <p><i class="fas fa-briefcase"></i> ${sanitizeHTML(alumnus.job_title ? alumnus.job_title + ' at ' : '')}${sanitizeHTML(alumnus.current_company || 'N/A')}</p>
+                            <p><i class="fas fa-graduation-cap"></i> ${sanitizeHTML(alumnus.major || 'N/A')} | Class of ${sanitizeHTML(alumnus.graduation_year || 'N/A')}</p>
                             <a href="view-profile.html?email=${alumnus.email}" class="btn btn-secondary">View Profile</a>
                         </div>
                     `;
                     alumniListContainer.appendChild(alumnusItem);
                 });
             } else {
-                noResultsMessage.style.display = 'block';
+                showEmptyState();
             }
         } catch (error) {
             console.error('Error fetching alumni:', error);
-            loadingMessage.style.display = 'none';
-            alumniListContainer.innerHTML = '<p class="error-message">Failed to load alumni. Please check the console and try again later.</p>';
+            alumniListContainer.innerHTML = '<p class="info-message error">Failed to load alumni. Please try again later.</p>';
         }
     };
 
-    // Initial load of all alumni
     fetchAndRenderAlumni();
 
-    // Setup search functionality
     if (searchButton) {
         searchButton.addEventListener('click', fetchAndRenderAlumni);
-    } else {
-        console.error('Search button not found!');
     }
 
-    // Add event listener for 'Enter' key on all filter inputs
     const filterInputs = [searchInput, universityFilter, majorFilter, yearFilter, cityFilter];
     filterInputs.forEach(input => {
         if (input) {
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    e.preventDefault(); // Prevent default form submission
+                    e.preventDefault();
                     fetchAndRenderAlumni();
                 }
             });

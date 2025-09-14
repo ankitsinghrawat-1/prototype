@@ -8,7 +8,6 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
 const cookieParser = require('cookie-parser');
-// --- SECURITY IMPROVEMENT: Load environment variables ---
 require('dotenv').config();
 
 const app = express();

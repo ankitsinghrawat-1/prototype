@@ -1,3 +1,4 @@
+// docs/notifications.js
 const showToast = (message, type = 'info') => {
     let backgroundColor;
     switch (type) {
@@ -21,4 +22,18 @@ const showToast = (message, type = 'info') => {
         backgroundColor: backgroundColor,
         stopOnFocus: true, // Prevents dismissing of toast on hover
     }).showToast();
+};
+
+/**
+ * NEW: Sanitizes a string to prevent XSS attacks by converting HTML special characters.
+ * @param {string} str The string to sanitize.
+ * @returns {string} The sanitized string.
+ */
+const sanitizeHTML = (str) => {
+    if (str === null || str === undefined) {
+        return '';
+    }
+    const temp = document.createElement('div');
+    temp.textContent = String(str);
+    return temp.innerHTML;
 };

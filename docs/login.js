@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!loginForm) {
         console.error("Error: The login form element with ID 'login-form' was not found.");
-        return; 
+        return;
     }
 
     if (!messageDiv) {
-        console.error("Error: The message element with ID 'message' was not found.");    
+        console.error("Error: The message element with ID 'message' was not found.");
     }
 
     const loggedInUserEmail = sessionStorage.getItem('loggedInUserEmail');
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Please enter both email and password.', 'error');
             return;
         }
-        
+
         if (messageDiv) {
             messageDiv.textContent = 'Logging in...';
             messageDiv.className = 'form-message info';
@@ -49,12 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 sessionStorage.setItem('loggedInUserEmail', data.email);
                 sessionStorage.setItem('userRole', data.role);
-                
+
                 if (messageDiv) {
                     messageDiv.textContent = 'Login successful!';
                     messageDiv.className = 'form-message success';
                 }
-                
+
                 if (data.role === 'admin') {
                     window.location.href = 'admin.html';
                 } else {

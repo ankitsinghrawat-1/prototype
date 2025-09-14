@@ -24,13 +24,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const fetchAndRenderMentors = async () => {
-        loadingMessage.style.display = 'block';
+        mentorsListContainer.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
 
         try {
             const response = await fetch('http://localhost:3000/api/mentors');
             const mentors = await response.json();
             
-            loadingMessage.style.display = 'none';
             mentorsListContainer.innerHTML = '';
 
             if (mentors.length > 0) {
@@ -43,23 +42,27 @@ document.addEventListener('DOMContentLoaded', async () => {
                         : 'https://via.placeholder.com/150';
 
                     mentorItem.innerHTML = `
-                        <img src="${profilePicUrl}" alt="${mentor.full_name}" class="alumnus-pfp-round">
+                        <img src="${profilePicUrl}" alt="${sanitizeHTML(mentor.full_name)}" class="alumnus-pfp-round">
                         <div class="alumnus-details">
-                            <h3>${mentor.full_name}</h3>
-                            <p><i class="fas fa-briefcase"></i> ${mentor.job_title || 'N/A'} at ${mentor.current_company || 'N/A'}</p>
-                            <p><i class="fas fa-star"></i> <strong>Expertise:</strong> ${mentor.expertise_areas || 'N/A'}</p>
+                            <h3>${sanitizeHTML(mentor.full_name)}</h3>
+                            <p><i class="fas fa-briefcase"></i> ${sanitizeHTML(mentor.job_title || 'N/A')} at ${sanitizeHTML(mentor.current_company || 'N/A')}</p>
+                            <p><i class="fas fa-star"></i> <strong>Expertise:</strong> ${sanitizeHTML(mentor.expertise_areas || 'N/A')}</p>
                             <a href="view-profile.html?email=${mentor.email}" class="btn btn-secondary">View Profile</a>
                         </div>
                     `;
                     mentorsListContainer.appendChild(mentorItem);
                 });
             } else {
-                noResultsMessage.style.display = 'block';
+                mentorsListContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>No Mentors Available</h3>
+                        <p>Be the first to help guide fellow alumni. Register to become a mentor!</p>
+                    </div>`;
             }
         } catch (error) {
             console.error('Error fetching mentors:', error);
-            loadingMessage.style.display = 'none';
-            mentorsListContainer.innerHTML = '<p class="error-message">Failed to load mentors.</p>';
+            mentorsListContainer.innerHTML = '<p class="info-message error">Failed to load mentors.</p>';
         }
     };
 

@@ -1,6 +1,9 @@
+// docs/jobs.js
 document.addEventListener('DOMContentLoaded', async () => {
     const jobsGrid = document.getElementById('jobs-grid');
-    const messageDiv = document.getElementById('message');
+    
+    // Show loading spinner initially
+    jobsGrid.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
 
     try {
         const response = await fetch('http://localhost:3000/api/jobs');
@@ -16,19 +19,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const applyUrl = `apply.html?job_id=${job.job_id}&title=${encodeURIComponent(job.title)}`;
 
                 jobCard.innerHTML = `
-                    <h3>${job.title}</h3>
-                    <p class="job-company"><i class="fas fa-building"></i> ${job.company}</p>
-                    <p class="job-location"><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
-                    <p class="job-description">${job.description}</p>
+                    <h3>${sanitizeHTML(job.title)}</h3>
+                    <p class="job-company"><i class="fas fa-building"></i> ${sanitizeHTML(job.company)}</p>
+                    <p class="job-location"><i class="fas fa-map-marker-alt"></i> ${sanitizeHTML(job.location)}</p>
+                    <p class="job-description">${sanitizeHTML(job.description)}</p>
                     <a href="${applyUrl}" class="btn btn-primary apply-btn">Apply Now</a>
                 `;
                 jobsGrid.appendChild(jobCard);
             });
         } else {
-            messageDiv.innerHTML = '<p class="info-message">No jobs posted at this time.</p>';
+            jobsGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>No Jobs Available</h3>
+                    <p>There are no job opportunities posted at the moment. Check back soon!</p>
+                </div>`;
         }
     } catch (error) {
         console.error('Error fetching jobs:', error);
-        messageDiv.innerHTML = '<p class="info-message error">Failed to load jobs. Please try again later.</p>';
+        jobsGrid.innerHTML = '<p class="info-message error">Failed to load jobs. Please try again later.</p>';
     }
 });

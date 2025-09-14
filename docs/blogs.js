@@ -1,3 +1,4 @@
+// docs/blogs.js
 document.addEventListener('DOMContentLoaded', async () => {
     const blogListContainer = document.getElementById('blog-list');
 
@@ -10,13 +11,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const postElement = document.createElement('div');
                 postElement.classList.add('blog-post-summary', 'card');
                 
-                // Truncate content for summary view
-                const summary = post.content.substring(0, 200) + '...';
+                // Sanitize content before displaying
+                const summary = sanitizeHTML(post.content.substring(0, 200) + '...');
                 const postDate = new Date(post.created_at).toLocaleDateString();
 
                 postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p class="post-meta">By ${post.author} on ${postDate}</p>
+                    <h3>${sanitizeHTML(post.title)}</h3>
+                    <p class="post-meta">By ${sanitizeHTML(post.author)} on ${postDate}</p>
                     <p>${summary}</p>
                     <a href="blog-post.html?id=${post.blog_id}" class="btn btn-secondary">Read More</a>
                 `;
