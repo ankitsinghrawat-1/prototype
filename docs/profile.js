@@ -27,9 +27,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetTab = e.target.getAttribute('data-tab');
-            window.location.hash = targetTab;
+            // Only prevent default for tab-switching links
+            if (link.hasAttribute('data-tab')) {
+                e.preventDefault();
+                const targetTab = e.target.getAttribute('data-tab');
+                window.location.hash = targetTab;
+            }
+            // Let regular links like "My Blogs" navigate normally
         });
     });
 
@@ -46,13 +50,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             targetLink.classList.add('active');
             targetPage.classList.add('active');
         } else {
-            document.querySelector('.profile-nav a').classList.add('active');
-            document.querySelector('.profile-page').classList.add('active');
+            // Fallback to the first tab if the hash is invalid
+            const firstTabLink = document.querySelector('.profile-nav a[data-tab]');
+            if (firstTabLink) {
+                firstTabLink.classList.add('active');
+                const firstTabPageId = firstTabLink.getAttribute('data-tab');
+                document.getElementById(firstTabPageId)?.classList.add('active');
+            }
         }
     };
     
     window.addEventListener('hashchange', handleTabSwitching);
-    handleTabSwitching();
+    handleTabSwitching(); // Initial call to set the correct tab on page load
 
     uploadBtn.addEventListener('click', () => {
         pfpUpload.click();

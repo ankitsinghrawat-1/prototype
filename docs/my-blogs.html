@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>My Blog Posts</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -16,34 +16,32 @@
     </script>
 </head>
 <body>
-    
     <header class="main-header">
         <nav class="main-nav container">
             <a href="index.html" class="logo">AlumniConnect</a>
-            <ul id="nav-links" class="nav-links">
-                </ul>
+            <ul id="nav-links" class="nav-links"></ul>
         </nav>
     </header>
 
-    <main class="form-main">
-        <section class="form-container">
-            <h2>Log In</h2>
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" required>
-                </div>
-
-                <div id="message" class="form-message"></div>
-
-                <button type="submit" class="btn btn-primary btn-full-width">Log In</button>
-            </form>
-            <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-        </section>
+    <main class="management-main">
+        <div class="container">
+            <div class="management-header">
+                <h2><i class="fas fa-feather-alt"></i> My Blog Posts</h2>
+                <a href="profile.html" class="btn btn-secondary">&larr; Back to Profile</a>
+            </div>
+            <div class="card">
+                <table class="management-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Date Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="my-blogs-list"></tbody>
+                </table>
+            </div>
+        </div>
     </main>
     
     <footer class="main-footer">
@@ -51,10 +49,10 @@
             <p>&copy; 2025 AlumniConnect. All Rights Reserved.</p>
         </div>
     </footer>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="notifications.js"></script>
     <script src="auth.js"></script>
-    <script src="login.js"></script>
+    <script src="my-blogs.js"></script>
 </body>
 </html>

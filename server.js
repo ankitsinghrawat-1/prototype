@@ -213,9 +213,30 @@ app.get('/api/blogs', async (req, res) => {
     }
 });
 
+// NEW: Get blogs for a specific user
+app.get('/api/user/blogs', async (req, res) => {
+    const { email } = req.query;
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+    try {
+        const [user] = await pool.query('SELECT user_id FROM users WHERE email = ?', [email]);
+        if (user.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const author_id = user[0].user_id;
+        const [rows] = await pool.query('SELECT blog_id, title, created_at FROM blogs WHERE author_id = ? ORDER BY created_at DESC', [author_id]);
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching user blogs:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+
 app.get('/api/blogs/:id', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT b.blog_id, b.title, b.content, u.full_name AS author, b.created_at FROM blogs b JOIN users u ON b.author_id = u.user_id WHERE b.blog_id = ?', [req.params.id]);
+        const [rows] = await pool.query('SELECT b.blog_id, b.title, b.content, u.full_name AS author, u.email as author_email, b.created_at FROM blogs b JOIN users u ON b.author_id = u.user_id WHERE b.blog_id = ?', [req.params.id]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Blog post not found' });
         }
@@ -243,11 +264,30 @@ app.post('/api/blogs', async (req, res) => {
 });
 
 app.put('/api/blogs/:id', async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, email } = req.body; // Email is now expected for user edits
+    const blog_id = req.params.id;
+
     try {
+        const [user] = await pool.query('SELECT user_id, role FROM users WHERE email = ?', [email]);
+        if (user.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const current_user_id = user[0].user_id;
+        const user_role = user[0].role;
+        
+        const [blog] = await pool.query('SELECT author_id FROM blogs WHERE blog_id = ?', [blog_id]);
+        if (blog.length === 0) {
+            return res.status(404).json({ message: 'Blog post not found' });
+        }
+
+        // Authorization check: user must be the author or an admin
+        if (blog[0].author_id !== current_user_id && user_role !== 'admin') {
+            return res.status(403).json({ message: 'You are not authorized to edit this post.' });
+        }
+
         await pool.query(
             'UPDATE blogs SET title = ?, content = ? WHERE blog_id = ?',
-            [title, content, req.params.id]
+            [title, content, blog_id]
         );
         res.status(200).json({ message: 'Blog post updated successfully!' });
     } catch (error) {
@@ -257,8 +297,29 @@ app.put('/api/blogs/:id', async (req, res) => {
 });
 
 app.delete('/api/blogs/:id', async (req, res) => {
+    const { email } = req.body; // Email is now expected for user deletes
+    const blog_id = req.params.id;
+
     try {
-        await pool.query('DELETE FROM blogs WHERE blog_id = ?', [req.params.id]);
+        const [user] = await pool.query('SELECT user_id, role FROM users WHERE email = ?', [email]);
+        if (user.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const current_user_id = user[0].user_id;
+        const user_role = user[0].role;
+
+        const [blog] = await pool.query('SELECT author_id FROM blogs WHERE blog_id = ?', [blog_id]);
+        if (blog.length === 0) {
+            // It's already gone, so we can consider the request successful.
+            return res.status(200).json({ message: 'Blog post already deleted.' });
+        }
+
+        // Authorization check: user must be the author or an admin
+        if (blog[0].author_id !== current_user_id && user_role !== 'admin') {
+            return res.status(403).json({ message: 'You are not authorized to delete this post.' });
+        }
+
+        await pool.query('DELETE FROM blogs WHERE blog_id = ?', [blog_id]);
         res.status(200).json({ message: 'Blog post deleted successfully' });
     } catch (error) {
         console.error('Error deleting blog post:', error);

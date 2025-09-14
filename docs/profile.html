@@ -6,6 +6,14 @@
     <title>User Profile</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark-mode') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
 </head>
 <body>
     
@@ -24,6 +32,7 @@
                 <nav class="profile-nav">
                     <ul>
                         <li><a href="#" class="profile-link active" data-tab="edit-profile">Edit Profile</a></li>
+                        <li><a href="my-blogs.html" class="profile-link">My Blogs</a></li>
                         <li><a href="#" class="profile-link" data-tab="change-password">Change Password</a></li>
                         <li><a href="#" class="profile-link" data-tab="privacy-settings">Privacy Settings</a></li>
                     </ul>

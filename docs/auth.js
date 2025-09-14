@@ -52,9 +52,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="profile.html#edit-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
-                    <li><a href="profile.html#change-password"><i class="fas fa-key"></i> Change Password</a></li>
+                    <li><a href="my-blogs.html"><i class="fas fa-feather-alt"></i> My Blogs</a></li>
                     <li><a href="profile.html#privacy-settings"><i class="fas fa-user-shield"></i> Privacy Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
+                    <li><button id="theme-toggle-btn" class="theme-toggle-button"><i class="fas fa-moon"></i><span>Toggle Theme</span></button></li>
                     <li><button id="logout-btn" class="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
                 </ul>
             </li>
@@ -72,6 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     navLinks.innerHTML = '';
     navLinks.appendChild(navItems);
 
+    // --- Dropdown Logic ---
     document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
         toggle.addEventListener('click', e => {
             e.preventDefault();
@@ -94,6 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    // --- Logout Button Logic ---
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
@@ -103,7 +106,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = 'index.html';
         });
     }
+    
+    // --- Theme Toggle Logic ---
+    const themeToggleButton = document.getElementById('theme-toggle-btn');
+    if (themeToggleButton) {
+        const themeIcon = themeToggleButton.querySelector('i');
+        
+        // Set initial icon based on the class on the <html> element
+        if (document.documentElement.classList.contains('dark-mode')) {
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            themeIcon.classList.replace('fa-sun', 'fa-moon');
+        }
+        
+        themeToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the dropdown from closing
+            document.documentElement.classList.toggle('dark-mode');
+            let theme = 'light-mode';
+            if (document.documentElement.classList.contains('dark-mode')) {
+                theme = 'dark-mode';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+            localStorage.setItem('theme', theme);
+        });
+    }
 
+    // --- Index Page Header Logic ---
     const path = window.location.pathname;
     const isIndexPage = path === '/' || path.endsWith('/index.html') || path.endsWith('/');
     if (isIndexPage) {

@@ -1956,3 +1956,102 @@ body main {
     transform: scale(1.1);
     box-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
 }
+
+
+/* --- Dark Mode Theme --- */
+html.dark-mode {
+    --primary-color: #f5a623;
+    --primary-dark-color: #d18d1f;
+    --accent-color: #3498db;
+    --accent-dark-color: #2980b9;
+    --background-color: #1a1a1a;
+    --surface-color: #2c2c2c;
+    --text-color: #f0f0f0;
+    --subtle-text-color: #a0a0a0;
+    --border-color: #3d3d3d;
+    --box-shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.4);
+    --box-shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+html.dark-mode .main-header,
+html.dark-mode .main-footer {
+    background-color: var(--surface-color);
+    border-color: var(--border-color);
+}
+
+html.dark-mode .card,
+html.dark-mode .form-container {
+    background: rgba(44, 44, 44, 0.7); /* Dark Glassmorphism */
+    border-color: transparent;
+}
+
+html.dark-mode h1, 
+html.dark-mode h2, 
+html.dark-mode h3, 
+html.dark-mode h4, 
+html.dark-mode h5, 
+html.dark-mode h6 {
+    color: var(--text-color);
+}
+
+html.dark-mode .logo {
+    color: var(--text-color);
+}
+
+html.dark-mode .nav-links a:not(.btn),
+html.dark-mode .nav-links button:not(.btn) {
+    color: var(--subtle-text-color);
+}
+html.dark-mode .nav-links a:hover, 
+html.dark-mode .nav-links button:hover {
+    color: var(--primary-color);
+}
+
+html.dark-mode .input-group input,
+html.dark-mode .input-group textarea {
+    background-color: #3a3a3a;
+    border-color: #555;
+    color: var(--text-color);
+}
+
+html.dark-mode .input-group input:focus,
+html.dark-mode .input-group textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.2);
+}
+
+html.dark-mode .management-table th {
+    background-color: #3a3a3a;
+}
+
+html.dark-mode .management-table tbody tr:hover {
+    background-color: #333;
+}
+
+/* --- Theme Toggle Button --- */
+.theme-toggle-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: var(--font-family); /* Ensure font consistency */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle-button:hover {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+}
+
+.main-footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
