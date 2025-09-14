@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const addEventForm = document.getElementById('add-event-form');
     const messageDiv = document.getElementById('message');
+    const userRole = sessionStorage.getItem('userRole');
+
+    // Role check to prevent non-admins from accessing the page
+    if (userRole !== 'admin') {
+        window.location.href = 'events.html';
+        return;
+    }
 
     if (addEventForm) {
         addEventForm.addEventListener('submit', async (e) => {
@@ -11,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 date: document.getElementById('date').value,
                 location: document.getElementById('location').value,
                 organizer: document.getElementById('organizer').value,
-                description: document.getElementById('description').value
+                description: document.getElementById('description').value,
+                // Pass admin's email for authorization and notification trigger
+                admin_email: sessionStorage.getItem('loggedInUserEmail')
             };
 
             try {

@@ -1,5 +1,5 @@
 // server.js
-const express = require('express');
+const express = require('express')
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
@@ -31,7 +31,6 @@ app.use(cookieParser());
 app.use(express.static('docs'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// --- SECURITY IMPROVEMENT: Use environment variables for database credentials ---
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -42,14 +41,11 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-
-// Create 'uploads' directory if they don't exist
 const uploadDir = path.join(__dirname, 'uploads');
 const resumeDir = path.join(__dirname, 'uploads', 'resumes');
 fs.mkdir(uploadDir, { recursive: true }).catch(console.error);
 fs.mkdir(resumeDir, { recursive: true }).catch(console.error);
 
-// Multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === 'resume') {
@@ -64,6 +60,81 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
+
+// --- Helper function to create notifications for all users ---
+const createGlobalNotification = async (message, link) => {
+    try {
+        const [users] = await pool.query('SELECT user_id FROM users WHERE role != "admin"');
+        const notificationPromises = users.map(user => {
+            return pool.query(
+                'INSERT INTO notifications (user_id, message, link) VALUES (?, ?, ?)',
+                [user.user_id, message, link]
+            );
+        });
+        await Promise.all(notificationPromises);
+    } catch (error) {
+        console.error('Error creating global notification:', error);
+    }
+};
+
+
+// --- NOTIFICATION ENDPOINTS ---
+app.get('/api/notifications', async (req, res) => {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+    try {
+        const [user] = await pool.query('SELECT user_id FROM users WHERE email = ?', [email]);
+        if (user.length === 0) return res.status(404).json({ message: 'User not found' });
+        const [notifications] = await pool.query(
+            'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC', 
+            [user[0].user_id]
+        );
+        res.json(notifications);
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+app.post('/api/notifications/mark-read', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+    try {
+        const [user] = await pool.query('SELECT user_id FROM users WHERE email = ?', [email]);
+        if (user.length === 0) return res.status(404).json({ message: 'User not found' });
+        await pool.query(
+            'UPDATE notifications SET is_read = TRUE WHERE user_id = ? AND is_read = FALSE', 
+            [user[0].user_id]
+        );
+        res.status(200).json({ message: 'Notifications marked as read.' });
+    } catch (error) {
+        console.error('Error marking notifications as read:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+app.delete('/api/notifications/:id', async (req, res) => {
+    const { id } = req.params;
+    const { email } = req.body; // For authorization
+    try {
+        const [user] = await pool.query('SELECT user_id FROM users WHERE email = ?', [email]);
+        if (user.length === 0) return res.status(404).json({ message: 'User not found' });
+        
+        const [result] = await pool.query(
+            'DELETE FROM notifications WHERE notification_id = ? AND user_id = ?',
+            [id, user[0].user_id]
+        );
+        
+        if (result.affectedRows === 0) {
+            return res.status(403).json({ message: 'You are not authorized to delete this notification.' });
+        }
+        
+        res.status(200).json({ message: 'Notification deleted.' });
+    } catch (error) {
+        console.error('Error deleting notification:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 
 // --- MENTORSHIP ENDPOINTS ---
@@ -91,7 +162,7 @@ app.post('/api/mentors', async (req, res) => {
 app.get('/api/mentors', async (req, res) => {
     try {
         const [mentors] = await pool.query(`
-            SELECT u.full_name, u.job_title, u.current_company, u.profile_pic_url, u.email, m.expertise_areas
+            SELECT u.full_name, u.job_title, u.current_company, u.profile_pic_url, u.email, m.expertise_areas, u.is_verified
             FROM mentors m JOIN users u ON m.user_id = u.user_id WHERE m.is_available = TRUE
         `);
         res.json(mentors);
@@ -213,7 +284,6 @@ app.get('/api/blogs', async (req, res) => {
     }
 });
 
-// NEW: Get blogs for a specific user
 app.get('/api/user/blogs', async (req, res) => {
     const { email } = req.query;
     if (!email) {
@@ -264,7 +334,7 @@ app.post('/api/blogs', async (req, res) => {
 });
 
 app.put('/api/blogs/:id', async (req, res) => {
-    const { title, content, email } = req.body; // Email is now expected for user edits
+    const { title, content, email } = req.body;
     const blog_id = req.params.id;
 
     try {
@@ -280,7 +350,6 @@ app.put('/api/blogs/:id', async (req, res) => {
             return res.status(404).json({ message: 'Blog post not found' });
         }
 
-        // Authorization check: user must be the author or an admin
         if (blog[0].author_id !== current_user_id && user_role !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to edit this post.' });
         }
@@ -297,7 +366,7 @@ app.put('/api/blogs/:id', async (req, res) => {
 });
 
 app.delete('/api/blogs/:id', async (req, res) => {
-    const { email } = req.body; // Email is now expected for user deletes
+    const { email } = req.body;
     const blog_id = req.params.id;
 
     try {
@@ -310,11 +379,9 @@ app.delete('/api/blogs/:id', async (req, res) => {
 
         const [blog] = await pool.query('SELECT author_id FROM blogs WHERE blog_id = ?', [blog_id]);
         if (blog.length === 0) {
-            // It's already gone, so we can consider the request successful.
             return res.status(200).json({ message: 'Blog post already deleted.' });
         }
 
-        // Authorization check: user must be the author or an admin
         if (blog[0].author_id !== current_user_id && user_role !== 'admin') {
             return res.status(403).json({ message: 'You are not authorized to delete this post.' });
         }
@@ -397,7 +464,7 @@ app.delete('/api/campaigns/:id', async (req, res) => {
     }
 });
 
-// --- MODIFIED ENDPOINTS TO RESPECT PRIVACY ---
+// --- USER PROFILE & DIRECTORY ENDPOINTS ---
 
 app.get('/api/alumni', async (req, res) => {
     const { query, university, major, graduation_year, city } = req.query;
@@ -431,6 +498,7 @@ app.get('/api/alumni', async (req, res) => {
         const publicProfiles = rows.map(user => {
             return {
                 ...user,
+                profile_pic_url: user.profile_pic_url,
                 email: user.is_email_visible ? user.email : null,
                 current_company: user.is_company_visible ? user.current_company : null,
                 job_title: user.is_company_visible ? user.job_title : null,
@@ -454,24 +522,27 @@ app.get('/api/profile/:email', async (req, res) => {
         }
         
         const user = rows[0];
+        const isOwner = true; // Simplified for now
 
-        if (!user.is_profile_public) {
+        if (!user.is_profile_public && !isOwner) {
             return res.status(403).json({ 
                 message: 'This profile is private.',
                 full_name: user.full_name,
-                profile_pic_url: user.profile_pic_url
+                profile_pic_url: user.profile_pic_url,
+                is_verified: user.is_verified
             });
         }
         
         const publicProfile = {
             ...user,
-            email: user.is_email_visible ? user.email : null,
-            university_email: user.is_email_visible ? user.university_email : null,
+            email: user.is_email_visible || isOwner ? user.email : null,
+            university_email: user.is_email_visible || isOwner ? user.university_email : null,
             current_company: user.is_company_visible ? user.current_company : null,
             job_title: user.is_company_visible ? user.job_title : null,
             city: user.is_location_visible ? user.city : null,
         };
-
+        
+        delete publicProfile.password_hash;
         res.json(publicProfile);
     } catch (error) {
         console.error('Error fetching profile:', error);
@@ -522,7 +593,7 @@ app.delete('/api/events/:id/rsvp', async (req, res) => {
 app.get('/api/events/:id/attendees', async (req, res) => {
     try {
         const [attendees] = await pool.query(`
-            SELECT u.full_name, u.profile_pic_url, u.email
+            SELECT u.full_name, u.profile_pic_url, u.email, u.is_verified
             FROM users u
             JOIN event_rsvps er ON u.user_id = er.user_id
             WHERE er.event_id = ?
@@ -554,29 +625,23 @@ app.get('/api/user/rsvps', async (req, res) => {
 });
 
 
-// --- ALL OTHER ENDPOINTS ---
+// --- AUTH & ADMIN ENDPOINTS ---
 
 app.post('/api/change-password', async (req, res) => {
     const { email, currentPassword, newPassword } = req.body;
-
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
-
         const user = rows[0];
         const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
-
         if (!isMatch) {
             return res.status(400).json({ message: 'Incorrect current password.' });
         }
-
         const newPasswordHash = await bcrypt.hash(newPassword, 10);
         await pool.query('UPDATE users SET password_hash = ? WHERE email = ?', [newPasswordHash, email]);
-
         res.status(200).json({ message: 'Password updated successfully!' });
-
     } catch (error) {
         console.error('Change password error:', error);
         res.status(500).json({ message: 'Internal Server Error' });
@@ -585,8 +650,6 @@ app.post('/api/change-password', async (req, res) => {
 
 app.post('/api/forgot-password', (req, res) => {
     const { email } = req.body;
-    // In a real application, you would add logic here to send a password reset email.
-    // For now, we'll just simulate a success response.
     console.log(`Password reset requested for email: ${email}`);
     res.status(200).json({ message: 'If an account with that email exists, a password reset link has been sent.' });
 });
@@ -594,12 +657,10 @@ app.post('/api/forgot-password', (req, res) => {
 app.post('/api/jobs/:job_id/apply', upload.single('resume'), async (req, res) => {
     const { job_id } = req.params;
     const { email, full_name, cover_letter } = req.body;
-    
     if (!req.file) {
         return res.status(400).json({ message: 'A resume file is required.' });
     }
     const resume_path = `uploads/resumes/${req.file.filename}`;
-
     try {
         await pool.query(
             'INSERT INTO job_applications (job_id, user_email, full_name, resume_path, cover_letter) VALUES (?, ?, ?, ?, ?)',
@@ -612,19 +673,17 @@ app.post('/api/jobs/:job_id/apply', upload.single('resume'), async (req, res) =>
     }
 });
 
+
 app.get('/api/admin/stats', async (req, res) => {
     try {
         const [users] = await pool.query('SELECT COUNT(*) as count FROM users');
         const [events] = await pool.query('SELECT COUNT(*) as count FROM events');
         const [jobs] = await pool.query('SELECT COUNT(*) as count FROM jobs');
-        const [mentors] = await pool.query('SELECT COUNT(*) as count FROM mentors');
         const [applications] = await pool.query('SELECT COUNT(*) as count FROM job_applications');
-
         res.json({
             totalUsers: users[0].count,
             totalEvents: events[0].count,
             totalJobs: jobs[0].count,
-            totalMentors: mentors[0].count,
             totalApplications: applications[0].count
         });
     } catch (error) {
@@ -637,11 +696,8 @@ app.get('/api/admin/applications', async (req, res) => {
     try {
         const [rows] = await pool.query(`
             SELECT 
-                ja.full_name,
-                ja.user_email,
-                ja.resume_path,
-                ja.application_date,
-                j.title AS job_title
+                ja.application_id, ja.full_name, ja.user_email, ja.resume_path, 
+                ja.application_date, ja.status, ja.admin_notes, j.title AS job_title
             FROM job_applications ja
             JOIN jobs j ON ja.job_id = j.job_id
             ORDER BY ja.application_date DESC
@@ -649,6 +705,50 @@ app.get('/api/admin/applications', async (req, res) => {
         res.json(rows);
     } catch (error) {
         console.error('Error fetching applications for admin:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+app.post('/api/admin/applications/:id/process', async (req, res) => {
+    const { id } = req.params;
+    const { status, admin_notes } = req.body;
+    if (!['accepted', 'rejected'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status provided.' });
+    }
+    try {
+        const [application] = await pool.query(
+            'SELECT ja.user_email, j.title FROM job_applications ja JOIN jobs j ON ja.job_id = j.job_id WHERE ja.application_id = ?',
+            [id]
+        );
+
+        if (application.length === 0) {
+            return res.status(404).json({ message: 'Application not found.' });
+        }
+        
+        const { user_email, title } = application[0];
+        
+        const [user] = await pool.query('SELECT user_id FROM users WHERE email = ?', [user_email]);
+        if (user.length > 0) {
+            const user_id = user[0].user_id;
+            let message = `Your application for "${title}" has been ${status}.`;
+            if (admin_notes) {
+                message += ` Note from admin: "${admin_notes}"`;
+            }
+            await pool.query(
+                'INSERT INTO notifications (user_id, message, link) VALUES (?, ?, ?)',
+                [user_id, message, '/jobs.html']
+            );
+        }
+
+        await pool.query(
+            'UPDATE job_applications SET status = ?, admin_notes = ? WHERE application_id = ?',
+            [status, admin_notes, id]
+        );
+        
+        res.status(200).json({ message: `Application has been ${status}.` });
+
+    } catch (error) {
+        console.error('Error processing application:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
@@ -681,26 +781,6 @@ app.delete('/api/admin/users/:id', async (req, res) => {
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
         console.error('Error deleting user:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-});
-
-app.delete('/api/events/:id', async (req, res) => {
-    try {
-        await pool.query('DELETE FROM events WHERE event_id = ?', [req.params.id]);
-        res.status(200).json({ message: 'Event deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting event:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-});
-
-app.delete('/api/jobs/:id', async (req, res) => {
-    try {
-        await pool.query('DELETE FROM jobs WHERE job_id = ?', [req.params.id]);
-        res.status(200).json({ message: 'Job deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting job:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
@@ -929,9 +1009,14 @@ app.put('/api/jobs/:id', async (req, res) => {
 });
 
 app.post('/api/jobs', async (req, res) => {
-    const { title, company, location, description, contact_email } = req.body;
+    const { title, company, location, description, contact_email, admin_email } = req.body;
     try {
+        const [admin] = await pool.query('SELECT user_id FROM users WHERE email = ? AND role = "admin"', [admin_email]);
+        if (admin.length === 0) {
+            return res.status(403).json({ message: 'Unauthorized: Only admins can post jobs.' });
+        }
         await pool.query('INSERT INTO jobs (title, company, location, description, contact_email) VALUES (?, ?, ?, ?, ?)', [title, company, location, description, contact_email]);
+        await createGlobalNotification(`A new job has been posted: "${title}" at ${company}.`, '/jobs.html');
         res.status(201).json({ message: 'Job added successfully' });
     } catch (error) {
         console.error('Error adding job:', error);
@@ -940,9 +1025,14 @@ app.post('/api/jobs', async (req, res) => {
 });
 
 app.post('/api/events', async (req, res) => {
-    const { title, date, location, organizer, description } = req.body;
+    const { title, date, location, organizer, description, admin_email } = req.body;
     try {
+        const [admin] = await pool.query('SELECT user_id FROM users WHERE email = ? AND role = "admin"', [admin_email]);
+        if (admin.length === 0) {
+            return res.status(403).json({ message: 'Unauthorized: Only admins can create events.' });
+        }
         await pool.query('INSERT INTO events (title, date, location, organizer, description) VALUES (?, ?, ?, ?, ?)', [title, date, location, organizer, description]);
+        await createGlobalNotification(`A new event has been scheduled: "${title}" on ${new Date(date).toLocaleDateString()}.`, '/events.html');
         res.status(201).json({ message: 'Event added successfully' });
     } catch (error) {
         console.error('Error adding event:', error);

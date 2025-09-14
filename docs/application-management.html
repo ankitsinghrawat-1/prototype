@@ -34,9 +34,9 @@
                     <thead>
                         <tr>
                             <th>Applicant Name</th>
-                            <th>Email</th>
                             <th>Job Title</th>
                             <th>Date Applied</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -46,6 +46,22 @@
         </div>
     </main>
     
+    <div id="decision-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3 id="modal-title">Process Application</h3>
+            <form id="decision-form">
+                <input type="hidden" id="application-id-input">
+                <input type="hidden" id="decision-status-input">
+                <div class="input-group">
+                    <label for="admin-notes">Notes (optional, for applicant)</label>
+                    <textarea id="admin-notes" rows="4" placeholder="e.g., We'd like to schedule an interview..."></textarea>
+                </div>
+                <button type="submit" id="modal-submit-btn" class="btn btn-primary btn-full-width">Confirm</button>
+            </form>
+        </div>
+    </div>
+
     <footer class="main-footer">
         <div class="container">
             <p>&copy; 2025 AlumniConnect. All Rights Reserved.</p>

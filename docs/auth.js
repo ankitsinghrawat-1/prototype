@@ -13,17 +13,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     navItems.className = 'nav-links';
 
     if (loggedInUserEmail) {
-        let profilePicUrl = 'https://via.placeholder.com/150'; // Default placeholder
+        let profilePicUrl = 'https://via.placeholder.com/150';
+        let unreadCount = 0;
+
         try {
-            const response = await fetch(`http://localhost:3000/api/profile/${loggedInUserEmail}`);
-            if (response.ok) {
-                const user = await response.json();
+            // Fetch profile picture and notifications in parallel
+            const [profileRes, notificationsRes] = await Promise.all([
+                fetch(`http://localhost:3000/api/profile/${loggedInUserEmail}`),
+                fetch(`http://localhost:3000/api/notifications?email=${encodeURIComponent(loggedInUserEmail)}`)
+            ]);
+
+            if (profileRes.ok) {
+                const user = await profileRes.json();
                 if (user.profile_pic_url) {
                     profilePicUrl = `http://localhost:3000/${user.profile_pic_url}`;
                 }
             }
+            if (notificationsRes.ok) {
+                const notifications = await notificationsRes.json();
+                unreadCount = notifications.filter(n => !n.is_read).length;
+            }
         } catch (error) {
-            console.error('Could not fetch profile picture for navbar:', error);
+            console.error('Could not fetch initial nav data:', error);
         }
 
         // --- LOGGED-IN VIEW ---
@@ -45,15 +56,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <li><a href="campaigns.html">Campaigns</a></li>
                 </ul>
             </li>
-            ${userRole === 'admin' ? `<li><a href="admin.html" class="btn btn-secondary">Admin Dashboard</a></li>` : `<li><a href="dashboard.html" class="btn btn-secondary">Dashboard</a></li>`}
+            ${userRole === 'admin' ? `<li><a href="admin.html" class="btn btn-secondary">Admin Dashboard</a></li>` : ''}
+            <li>
+                <a href="notifications.html" id="notification-bell" class="notification-bell" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    ${unreadCount > 0 ? `<span class="notification-badge">${unreadCount}</span>` : ''}
+                </a>
+            </li>
             <li class="profile-dropdown nav-dropdown">
                 <a href="#" class="dropdown-toggle profile-toggle">
                     <img src="${profilePicUrl}" alt="Profile" class="nav-profile-pic">
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="profile.html#edit-profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="profile.html"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
                     <li><a href="my-blogs.html"><i class="fas fa-feather-alt"></i> My Blogs</a></li>
-                    <li><a href="profile.html#privacy-settings"><i class="fas fa-user-shield"></i> Privacy Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><button id="theme-toggle-btn" class="theme-toggle-button"><i class="fas fa-moon"></i><span>Toggle Theme</span></button></li>
                     <li><button id="logout-btn" class="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button></li>
@@ -72,6 +89,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     navLinks.innerHTML = '';
     navLinks.appendChild(navItems);
+
+    // --- Notification Bell Logic ---
+    const notificationBell = document.getElementById('notification-bell');
+    if (notificationBell) {
+        notificationBell.addEventListener('click', async (e) => {
+            // Mark notifications as read when the bell is clicked
+            try {
+                await fetch('http://localhost:3000/api/notifications/mark-read', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: loggedInUserEmail })
+                });
+                const badge = notificationBell.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Failed to mark notifications as read:', error);
+            }
+        });
+    }
 
     // --- Dropdown Logic ---
     document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
@@ -112,7 +150,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (themeToggleButton) {
         const themeIcon = themeToggleButton.querySelector('i');
         
-        // Set initial icon based on the class on the <html> element
         if (document.documentElement.classList.contains('dark-mode')) {
             themeIcon.classList.replace('fa-moon', 'fa-sun');
         } else {
@@ -120,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         
         themeToggleButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent the dropdown from closing
+            e.stopPropagation();
             document.documentElement.classList.toggle('dark-mode');
             let theme = 'light-mode';
             if (document.documentElement.classList.contains('dark-mode')) {

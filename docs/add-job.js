@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const addJobForm = document.getElementById('add-job-form');
     const messageDiv = document.getElementById('message');
+    const userRole = sessionStorage.getItem('userRole');
+
+    // Role check to prevent non-admins from accessing the page
+    if (userRole !== 'admin') {
+        window.location.href = 'jobs.html';
+        return;
+    }
 
     if (addJobForm) {
         addJobForm.addEventListener('submit', async (e) => {
@@ -11,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 company: document.getElementById('company').value,
                 location: document.getElementById('location').value,
                 description: document.getElementById('description').value,
-                contact_email: document.getElementById('contact-email').value
+                contact_email: document.getElementById('contact-email').value,
+                // Pass admin's email for authorization and notification trigger
+                admin_email: sessionStorage.getItem('loggedInUserEmail')
             };
 
             try {
