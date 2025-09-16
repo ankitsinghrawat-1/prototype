@@ -849,37 +849,60 @@ app.post('/api/onboard', async (req, res) => {
     }
 });
 
+// server.js
+
 app.put('/api/profile/:email', upload.single('profile_picture'), async (req, res) => {
     const { email } = req.params;
-    const { full_name, bio, current_company, job_title, city, linkedin, university, major, graduation_year, degree } = req.body;
+    const {
+        full_name, bio, current_company, job_title, city,
+        linkedin, university, major, graduation_year, degree
+    } = req.body;
+
     let profile_pic_url = req.file ? `uploads/${req.file.filename}` : undefined;
+
     try {
-        const [userRows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [userRows] = await pool.query('SELECT profile_pic_url FROM users WHERE email = ?', [email]);
         if (userRows.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
         const user = userRows[0];
-        const updateData = {};
-        if (full_name !== undefined) updateData.full_name = full_name;
-        if (bio !== undefined) updateData.bio = bio;
-        if (current_company !== undefined) updateData.current_company = current_company;
-        if (job_title !== undefined) updateData.job_title = job_title;
-        if (city !== undefined) updateData.city = city;
-        if (linkedin !== undefined) updateData.linkedin = linkedin || null;
-        if (university !== undefined) updateData.university = university;
-        if (major !== undefined) updateData.major = major;
-        if (graduation_year !== undefined) updateData.graduation_year = graduation_year;
-        if (degree !== undefined) updateData.degree = degree;
+
+        const updateFields = {};
+
+        const addField = (fieldName, value) => {
+            if (value !== undefined) {
+                updateFields[fieldName] = value;
+            }
+        };
+
+        addField('full_name', full_name);
+        addField('bio', bio);
+        addField('current_company', current_company);
+        addField('job_title', job_title);
+        addField('city', city);
+        addField('linkedin', linkedin);
+        addField('university', university);
+        addField('major', major);
+        addField('degree', degree);
+
+        if (graduation_year !== undefined) {
+            updateFields.graduation_year = (graduation_year === '' || graduation_year === null)
+                ? null
+                : parseInt(graduation_year, 10);
+        }
+
         if (profile_pic_url) {
-            updateData.profile_pic_url = profile_pic_url;
+            updateFields.profile_pic_url = profile_pic_url;
             if (user.profile_pic_url) {
                 const oldPicPath = path.join(__dirname, user.profile_pic_url);
                 fs.unlink(oldPicPath).catch(err => console.error("Failed to delete old profile pic:", err));
             }
         }
-        if (Object.keys(updateData).length > 0) {
-            await pool.query('UPDATE users SET ? WHERE email = ?', [updateData, email]);
+
+        if (Object.keys(updateFields).length > 0) {
+            await pool.query('UPDATE users SET ? WHERE email = ?', [updateFields, email]);
         }
+
         res.status(200).json({ message: 'Profile updated successfully' });
     } catch (error) {
         console.error('Profile update error:', error);

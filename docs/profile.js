@@ -166,42 +166,50 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        const fields = [
-            'full_name', 'bio', 'current_company', 'job_title', 
-            'city', 'linkedin', 'university', 'major', 
-            'graduation_year', 'degree'
-        ];
-        fields.forEach(id => {
-            const input = document.getElementById(`${id}_input`);
-            if (input && input.style.display === 'block') {
-                formData.append(id, input.value);
-            } else {
-                const display = document.getElementById(id);
-                formData.append(id, display.textContent === 'Not set' ? '' : display.textContent);
-            }
-        });
-        if (pfpUpload.files[0]) {
-            formData.append('profile_picture', pfpUpload.files[0]);
-        }
-        try {
-            const response = await fetch(`http://localhost:3000/api/profile/${userEmail}`, {
-                method: 'PUT',
-                body: formData
-            });
-            const data = await response.json();
-            if (response.ok) {
-                displayMessage(data.message, 'success');
-                await fetchUserProfile();
-            } else {
-                displayMessage(data.message);
-            }
-        } catch (error) {
-            displayMessage('An error occurred while saving your profile.');
+// docs/profile.js
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    const fields = [
+        'full_name', 'bio', 'current_company', 'job_title',
+        'city', 'linkedin', 'university', 'major',
+        'graduation_year', 'degree'
+    ];
+
+    fields.forEach(id => {
+        const input = document.getElementById(`${id}_input`);
+        const display = document.getElementById(id); 
+        
+
+        if (input && input.style.display === 'block') {
+            formData.append(id, input.value);
+        } else if (display) {
+            const currentValue = display.textContent === 'Not set' ? '' : display.textContent;
+            formData.append(id, currentValue);
         }
     });
+
+    if (pfpUpload.files[0]) {
+        formData.append('profile_picture', pfpUpload.files[0]);
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/profile/${userEmail}`, {
+            method: 'PUT',
+            body: formData
+        });
+        const data = await response.json();
+        if (response.ok) {
+            displayMessage(data.message, 'success');
+            await fetchUserProfile();
+        } else {
+            displayMessage(data.message);
+        }
+    } catch (error) {
+        displayMessage('An error occurred while saving your profile.');
+    }
+});
 
     privacyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
